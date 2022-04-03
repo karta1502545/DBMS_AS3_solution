@@ -2,8 +2,6 @@ package org.vanilladb.core.query.algebra;
 
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.Type;
-import org.vanilladb.core.storage.record.RecordFile;
-import org.vanilladb.core.storage.record.RecordId;
 
 public class ExplainScan implements Scan {
 	private Scan s;
@@ -41,7 +39,7 @@ public class ExplainScan implements Scan {
 			recordsAccessed = 0; // Clear records
 			while(s.next()); // Keep invoking next() to count records accessed.
 			StringBuilder sb = new StringBuilder();
-			explainPlan.explain(sb, 0); // Guarantees to make sb have length greater than 0, because there is at least the explain plan..
+			explainPlan.explain(sb, 0); // Guarantees to make sb have length greater than 0, because there is at least the explain plan.
 			sb.append("Actual #recs: ")
 			.append(recordsAccessed)
 			.append('\n');

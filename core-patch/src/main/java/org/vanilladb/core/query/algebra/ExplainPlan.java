@@ -70,12 +70,8 @@ public class ExplainPlan implements Plan {
 	
 	@Override
 	public void explain(StringBuilder sb, int numIndents) {
-		ExplainPlan.explainNode(
-			this, 
-			sb, 
-			numIndents
-		);
-		p.explain(sb, numIndents); // Recurse to next layer. Because ExplainPlan is always the root, the number of indents is 0.
+		sb.append('\n'); // Lead with one empty line so the root plan string doesn't get dropped.
+		p.explain(sb, numIndents); // Recurse to next layer. Because ExplainPlan is always the root, the number of indents is passed over.
 	}
 	
 	@Override
