@@ -61,4 +61,19 @@ public interface Plan {
 	 * @return the estimated number of output records
 	 */
 	long recordsOutput();
+	
+	/**
+	 * Appends strings containing info about the plan tree, to the given StringBuilder.
+	 * @param sb the StringBuilder to append the string to
+	 * @param numIndents the number of indents to prefix the strings with
+	 */
+	void explain(StringBuilder sb, int numIndents);
+	
+	/**
+	 * Adds a string containing optional info about this plan node to the given StringBuilder.
+	 * @param sb the StringBuilder to append the string to
+	 * @return a reference to the given StringBuilder
+	 */
+	StringBuilder addOptionalInfo(StringBuilder sb);
+	
 }

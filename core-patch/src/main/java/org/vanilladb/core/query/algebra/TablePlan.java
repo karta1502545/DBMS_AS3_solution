@@ -96,6 +96,27 @@ public class TablePlan implements Plan {
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
 	}
+	
+
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		// TablePlans are leaf nodes of the plan tree, so no need to recurse any further.
+	}
+	
+	/**
+	 * Adds a string of the format "on (${tableName})", where tableName is the name of the table to query.
+	 */
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		return sb.append("on (")
+		.append(ti.tableName())
+		.append(')');
+	}
 
 
 }

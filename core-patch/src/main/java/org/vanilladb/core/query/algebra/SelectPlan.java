@@ -377,5 +377,26 @@ public class SelectPlan extends ReduceRecordsPlan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		p.explain(sb, numIndents + 1);
+	}
+	
+	/**
+	 * Adds a string of the format "pred:${predString}", where predString is a string representation of the
+	 * predicate used in the SelectPlan.
+	 */
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		return sb.append("pred:(")
+		.append(pred.toString())
+		.append(')');
+	}
+
 
 }

@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.vanilladb.core.query.algebra.AbstractJoinPlan;
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.Schema;
@@ -138,5 +139,23 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 			sb.append("\t").append(child).append("\n");
 		;
 		return sb.toString();
+	}
+
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		// Recurse to sp1 first, then sp2
+		sp1.explain(sb, numIndents + 1);
+		sp2.explain(sb, numIndents + 1);
+	}
+	
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		// No additional info is added for MergeJoinPlan
+		return sb;
 	}
 }

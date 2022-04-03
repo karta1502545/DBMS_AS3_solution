@@ -35,6 +35,7 @@ public class QueryData {
 	private Set<AggregationFn> aggFn;
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
+	private boolean isExplainQuery;
 
 	/**
 	 * Saves the information of a SQL query.
@@ -52,9 +53,18 @@ public class QueryData {
 	 *            a list of field names for sorting
 	 * @param sortDirs
 	 *            a list of sort directions
+	 * @param explain
+	 * 			  whether the query should be explained or not
 	 */
-	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
-			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+	public QueryData(
+			Set<String> projFields, 
+			Set<String> tables, 
+			Predicate pred,
+			Set<String> groupFields, 
+			Set<AggregationFn> aggFn, 
+			List<String> sortFields, 
+			List<Integer> sortDirs,
+			boolean isExplainQuery) {
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -62,6 +72,7 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+		this.isExplainQuery = isExplainQuery;
 	}
 
 	/**
@@ -128,9 +139,18 @@ public class QueryData {
 	public Set<AggregationFn> aggregationFn() {
 		return aggFn;
 	}
+	/**
+	 * Returns a boolean indicating if the query is an explain query. 
+	 */
+	public boolean isExplainQuery() {
+		return isExplainQuery;
+	}
 
 	public String toString() {
-		StringBuilder result = new StringBuilder();;
+		StringBuilder result = new StringBuilder();
+		
+		if(isExplainQuery) result.append("explain "); // Explain query
+		
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");
