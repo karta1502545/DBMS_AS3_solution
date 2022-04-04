@@ -28,6 +28,7 @@ import org.vanilladb.core.sql.predicate.Predicate;
  * Data for the SQL <em>select</em> statements.
  */
 public class QueryData {
+	//add explain flag
 	private Set<String> projFields;
 	private Set<String> tables;
 	private Predicate pred;
@@ -129,7 +130,7 @@ public class QueryData {
 		return aggFn;
 	}
 
-	public String toString() {
+	public String toString() {//add explain to result? no need?
 		StringBuilder result = new StringBuilder();;
 		result.append("select ");
 		for (String fldname : projFields)

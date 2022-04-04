@@ -260,7 +260,7 @@ public class GroupByPlan extends ReduceRecordsPlan {
 	 *            the calling transaction
 	 */
 	public GroupByPlan(Plan p, Set<String> groupFlds,
-			Set<AggregationFn> aggFns, Transaction tx) {
+			Set<AggregationFn> aggFns, Transaction tx) { //add toString at constructor?
 		schema = new Schema();
 		this.groupFlds = groupFlds;
 		if (!this.groupFlds.isEmpty()) {

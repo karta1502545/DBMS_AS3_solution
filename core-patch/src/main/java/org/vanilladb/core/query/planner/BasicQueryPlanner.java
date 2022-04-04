@@ -66,7 +66,7 @@ public class BasicQueryPlanner implements QueryPlanner {
 		// Step 6: Add a sort plan if specified
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
-
+		//Add Explain plan??
 		return p;
 	}
 }
