@@ -140,4 +140,18 @@ public class ProductPlan implements Plan {
 	}
 
 
+	/**
+	 * Returns explanation of the plan and its sub-plan
+	 *
+	 * @param level the indention level
+	 * @return explain
+	 */
+	@Override
+	public String generateExplanation(int level) {
+		String explanation = String.format("->ProductPlan (#blks=%d, #recs=%d)%n", blocksAccessed(), recordsOutput());
+		explanation = new String(new char[level]).replace("\0", "  ") + explanation;
+		explanation += p1.generateExplanation(level + 1);
+		explanation += p2.generateExplanation(level + 1);
+		return explanation;
+	}
 }
