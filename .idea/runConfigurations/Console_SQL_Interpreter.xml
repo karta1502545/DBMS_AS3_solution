@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Console SQL Interpreter" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.vanilladb.core.util.ConsoleSQLInterpreter" />
+    <module name="core-patch" />
+    <option name="VM_PARAMETERS" value="-Djava.util.logging.config.file=target/classes/java/util/logging/logging.properties -Dorg.vanilladb.core.config.file=target/classes/org/vanilladb/core/vanilladb.properties" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
