@@ -138,6 +138,26 @@ public class ProductPlan implements Plan {
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
 	}
-
-
+	
+	
+	@Override
+	public String toString() {
+		String cleft = p1.toString();
+		String[] csleft = cleft.split("\n");
+		String cright = p2.toString();
+		String[] csright = cright.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("ProductPlan (#blks="
+				+ blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		/*
+		 * do right first and then do left 
+		 * */
+		for (String right_child : csright)
+			sb.append("\t").append(right_child).append("\n");
+		for (String left_child : csleft)
+			sb.append("\t").append(left_child).append("\n");
+		return sb.toString();
+	}
 }
