@@ -139,5 +139,14 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	@Override
+	public String explainOutput() {
+		String ans = "";
+		// ProductPlan  (#blks=22, #recs=10)
+		String format = "-> ProductPlan (#blks=%d, #recs=%d)";
+		long blks = blocksAccessed();
+		long recs = recordsOutput();
+		ans = String.format(format, blks, recs);
+		return ans;
+	}
 }
