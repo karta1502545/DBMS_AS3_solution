@@ -53,10 +53,28 @@ public class Planner {
 	 * @return the scan corresponding to the query plan
 	 */
 	public Plan createQueryPlan(String qry, Transaction tx) {
+		// System.out.println("Planner print qry"+qry);
+		// qry = qry.toLowerCase();
+		
 		Parser parser = new Parser(qry);
 		QueryData data = parser.queryCommand();
 		Verifier.verifyQueryData(data, tx);
 		return qPlanner.createPlan(data, tx);
+		// if (qry.startsWith("explain")) {
+			// System.out.println(ret_p.toString());
+			// create temp table
+			// get CreateTableData from parser
+			// CreateTableData ctdata = parser.createExplainTempTable();
+			// Verifier.verifyCreateTableData(ctdata, tx);
+			// uPlanner.executeCreateTable(ctdata, tx);
+			// create Explain Plan
+
+			// drop temp table?
+			// DropTableData dtdata = parser.dropExplainTempTable();
+			// Verifier.verifyDropTableData(dtdata, tx);
+			// uPlanner.executeDropTable(dtdata, tx);
+		// }
+		// return ret_p;
 	}
 
 	/**
