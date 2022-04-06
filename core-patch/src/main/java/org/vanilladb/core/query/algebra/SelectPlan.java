@@ -327,6 +327,7 @@ public class SelectPlan extends ReduceRecordsPlan {
 		this.p = p;
 		this.pred = pred;
 		hist = predHistogram(p.histogram(), pred);
+		// System.out.println("(pseudo) SelectPlan pred:("+pred.toString()+") (#blks="+blocksAccessed()+", #recs="+recordsOutput()+")");
 	}
 
 	/**
@@ -378,4 +379,18 @@ public class SelectPlan extends ReduceRecordsPlan {
 	}
 
 
+	@Override
+	public String toString() {
+		String c = p.toString();
+		// System.out.println("string in select childern"+c+"string select");
+		String[] cs = c.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("SelectPlan (#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		for (String child : cs)
+			sb.append("\t").append(child).append("\n");
+		;
+		return sb.toString();
+	}
 }

@@ -61,4 +61,12 @@ public interface Plan {
 	 * @return the estimated number of output records
 	 */
 	long recordsOutput();
+
+
+	/**
+	 * Returns a recursively built string of the plan and its children
+	 * 
+	 * @return the built string
+	 */
+	String toString();
 }

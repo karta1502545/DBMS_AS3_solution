@@ -79,6 +79,7 @@ public class ProductPlan implements Plan {
 		schema.addAll(p1.schema());
 		schema.addAll(p2.schema());
 		hist = productHistogram(p1.histogram(), p2.histogram());
+		// System.out.println("(pseudo) ProductPlan (#blks="+blocksAccessed()+", #recs="+recordsOutput()+")");
 	}
 
 	/**
@@ -139,5 +140,25 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String toString() {
+		String c1 = p1.toString();
+		String c2 = p2.toString();
+		// System.out.println("string in product childern1"+c1+"string product");
+		// System.out.println("string in product childern1"+c2+"string product");
+		String[] cs1 = c1.split("\n");
+		String[] cs2 = c2.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("ProductPlan (#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		for (String child : cs1)
+			sb.append("\t").append(child).append("\n");
+		;
+		for (String child : cs2)
+			sb.append("\t").append(child).append("\n");
+		;
+		return sb.toString();
+	}
 
 }

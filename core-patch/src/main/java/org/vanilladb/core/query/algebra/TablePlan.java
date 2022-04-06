@@ -47,6 +47,7 @@ public class TablePlan implements Plan {
 			throw new TableNotFoundException("table '" + tblName
 					+ "' is not defined in catalog.");
 		si = VanillaDb.statMgr().getTableStatInfo(ti, tx);
+		// System.out.println("(pseudo) TablePlan on ("+tblName+") (#blks="+blocksAccessed()+", #recs="+recordsOutput()+")");
 	}
 
 	/**
@@ -97,5 +98,13 @@ public class TablePlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	@Override
+	public String toString() { // no children in tablePlan
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("TablePlan on ("+ti.tableName()+") (#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		
+		return sb.toString();
+	}
 }

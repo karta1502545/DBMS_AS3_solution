@@ -63,6 +63,7 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 		schema.addAll(p2.schema());
 
 		hist = joinHistogram(p1.histogram(), p2.histogram(), fldName1, fldName2);
+		// System.out.println("(pseudo) MergeJoinPlan (#blks="+blocksAccessed()+", #recs="+recordsOutput()+")");
 	}
 
 	/**
