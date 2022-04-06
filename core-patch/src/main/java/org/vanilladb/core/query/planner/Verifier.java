@@ -45,7 +45,7 @@ import org.vanilladb.core.storage.tx.Transaction;
  * statements.
  * 
  */
-public class Verifier {
+public class Verifier { //nothing to change
 
 	public static void verifyQueryData(QueryData data, Transaction tx) {
 		List<Schema> schs = new ArrayList<Schema>(data.tables().size());
