@@ -69,7 +69,7 @@ public class BasicQueryPlanner implements QueryPlanner {
 		//Add Explain plan??
 		if (data.explainFlag() == true) {
 			p = new ExplainPlan(p);
-			System.out.println("Exlpain");
+			//System.out.println("Exlpain");
 		}
 		return p;
 	}
