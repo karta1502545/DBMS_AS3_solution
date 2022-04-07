@@ -72,7 +72,8 @@ public class BasicQueryPlanner implements QueryPlanner {
 
 		// Step7 : Explain plan
 		if(data.isExplain()==true) {
-			p = new ExplainPlan(p);
+			
+			p = new ExplainPlan(p, data.explainFields());
 		}
 		return p;
 	}

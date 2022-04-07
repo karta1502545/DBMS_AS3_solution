@@ -228,9 +228,11 @@ public class Parser {
 	 */
 	public QueryData queryCommand() {
 		boolean flag = false;
+		Set<String> explainFields = new HashSet<String>();
 		if(lex.matchKeyword("explain")) {
 			flag = true;
 			lex.eatKeyword("explain");
+			explainFields.add("query-plan");
 		}
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
@@ -264,7 +266,7 @@ public class Parser {
 			sortFields = sortList.fieldList();
 			sortDirs = sortList.directionList();
 		}
-		return new QueryData(flag, projs.asStringSet(), tables, pred,
+		return new QueryData(flag, explainFields, projs.asStringSet(), tables, pred,
 				groupFields, projs.aggregationFns(), sortFields, sortDirs);
 	}
 

@@ -18,6 +18,7 @@ package org.vanilladb.core.query.algebra;
 import java.util.Collection;
 
 import org.vanilladb.core.sql.Constant;
+import org.vanilladb.core.sql.VarcharConstant;
 
 /**
  * The scan class corresponding to the <em>project</em> relational algebra
@@ -27,6 +28,9 @@ import org.vanilladb.core.sql.Constant;
 public class ExplainScan implements Scan {
 	private Scan s;
 	private Collection<String> fieldList;
+	private String result = "";
+	private int numRecords = 0;
+	private boolean flag = false;
 
 	/**
 	 * Creates a project scan having the specified underlying scan and field
@@ -37,19 +41,33 @@ public class ExplainScan implements Scan {
 	 * @param fieldList
 	 *            the list of field names
 	 */
-	public ExplainScan(Scan s, Collection<String> fieldList) {
+	public ExplainScan(Scan s, Collection<String> fieldList, String resultstring) {
 		this.s = s;
 		this.fieldList = fieldList;
+		
+		this.result = "\n" + resultstring;
+		s.beforeFirst();
+		while(s.next())
+			numRecords++;
+		s.close();
+		this.result += "\nActual #recs: " + numRecords;
+		
 	}
 
 	@Override
 	public void beforeFirst() {
+		flag = true;
 		s.beforeFirst();
 	}
 
 	@Override
 	public boolean next() {
-		return s.next();
+		if(flag==true) {
+			flag = false;
+			return true;
+		}
+		else return false;
+		// return s.next();
 	}
 
 	@Override
@@ -59,8 +77,8 @@ public class ExplainScan implements Scan {
 
 	@Override
 	public Constant getVal(String fldName) {
-		if (hasField(fldName))
-			return s.getVal(fldName);
+		if (fldName.equals("query-plan"))
+			return new VarcharConstant(result);
 		else
 			throw new RuntimeException("field " + fldName + " not found.");
 	}
