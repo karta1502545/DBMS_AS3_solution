@@ -383,7 +383,7 @@ public class SelectPlan extends ReduceRecordsPlan {
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");
-		sb.append("SelectProjectPlan pred:(" 
+		sb.append("SelectPlan pred:(" 
 				+ pred.toString()
 				+ ") (#blks=" + blocksAccessed() 
 				+ ", #recs=" + recordsOutput() + ")\n");

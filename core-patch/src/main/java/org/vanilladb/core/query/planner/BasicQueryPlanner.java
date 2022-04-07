@@ -18,7 +18,7 @@ package org.vanilladb.core.query.planner;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.ProductPlan;
 import org.vanilladb.core.query.algebra.ProjectPlan;
@@ -68,7 +68,7 @@ public class BasicQueryPlanner implements QueryPlanner {
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 		//Add Explain plan??
 		if (data.explainFlag() == true) {
-			// p = new ExplainPlan(p);
+			p = new ExplainPlan(p);
 			System.out.println("Exlpain");
 		}
 		return p;
