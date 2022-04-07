@@ -26,25 +26,6 @@ import org.vanilladb.core.storage.metadata.statistics.Histogram;
  * algebra operator.
  */
 public class ExplainPlan implements Plan {
-	/**
-	 * Returns a histogram that approximates the join frequency distribution of
-	 * the projected values from the specified histograms onto the specified
-	 * fields.
-	 * 
-	 * @param hist
-	 *            the input join distribution of field values
-	 * @param fldNames
-	 *            the names of fields to project to
-	 * @return join distribution of projected values
-	 */
-	public static Histogram projectHistogram(Histogram hist,
-			Set<String> fldNames) {
-		Histogram pjtHist = new Histogram(fldNames);
-		for (String fld : fldNames)
-			pjtHist.setBuckets(fld, hist.buckets(fld));
-		return pjtHist;
-	}
-
 	private Plan p;
 	private Schema schema = new Schema();
 	private Histogram hist;
