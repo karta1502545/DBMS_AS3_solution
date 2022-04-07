@@ -63,5 +63,5 @@ public interface Plan {
 	long recordsOutput();
 	
 	// return output string
-	String explainOutput();
+	// String explainOutput();
 }

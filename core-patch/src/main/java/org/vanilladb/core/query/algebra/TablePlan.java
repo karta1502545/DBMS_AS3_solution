@@ -97,16 +97,26 @@ public class TablePlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	
 	@Override
-	public String explainOutput() {
-		String ans = "";
-		// ->TablePlan on (warehouse) (#blks=2, #recs=1)
-		String format = "-> TablePlan on (%s) (#blks=%d, #recs=%d)";
-		String tableName = ti.tableName();
-		long blks = blocksAccessed();
-		long recs = recordsOutput();
-		ans = String.format(format, tableName, blks, recs);
-		return ans;
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("TablePlan on (" + ti.tableName() + 
+						") (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
+		return sb.toString();
 	}
+	
+//	@Override
+//	public String explainOutput() {
+//		String ans = "";
+//		// ->TablePlan on (warehouse) (#blks=2, #recs=1)
+//		String format = "-> TablePlan on (%s) (#blks=%d, #recs=%d)";
+//		String tableName = ti.tableName();
+//		long blks = blocksAccessed();
+//		long recs = recordsOutput();
+//		ans = String.format(format, tableName, blks, recs);
+//		return ans;
+//	}
 
 }

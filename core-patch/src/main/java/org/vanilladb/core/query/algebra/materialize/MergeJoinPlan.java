@@ -140,9 +140,9 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 		return sb.toString();
 	}
 	
-	@Override
-	public String explainOutput() {
-		String ans = "";
-		return ans;
-	}
+//	@Override
+//	public String explainOutput() {
+//		String ans = "";
+//		return ans;
+//	}
 }

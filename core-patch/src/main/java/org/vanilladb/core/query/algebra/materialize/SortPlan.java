@@ -312,14 +312,14 @@ public class SortPlan implements Plan {
 		return sb.toString();
 	}
 	
-	@Override
-	public String explainOutput() {
-		String ans = "";
-		// ->SortPlan (#blks=2, #recs=10)
-		String format = "-> SortPlan: (#blks=%d, #recs=%d)";
-		long blks = blocksAccessed();
-		long recs = recordsOutput();
-		ans = String.format(format, blks, recs);
-		return ans;
-	}
+//	@Override
+//	public String explainOutput() {
+//		String ans = "";
+//		// ->SortPlan (#blks=2, #recs=10)
+//		String format = "-> SortPlan: (#blks=%d, #recs=%d)";
+//		long blks = blocksAccessed();
+//		long recs = recordsOutput();
+//		ans = String.format(format, blks, recs);
+//		return ans;
+//	}
 }
