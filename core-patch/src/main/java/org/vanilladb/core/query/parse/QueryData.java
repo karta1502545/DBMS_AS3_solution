@@ -28,7 +28,7 @@ import org.vanilladb.core.sql.predicate.Predicate;
  * Data for the SQL <em>select</em> statements.
  */
 public class QueryData {
-	//add explain flag
+	private boolean explainFlag;
 	private Set<String> projFields;
 	private Set<String> tables;
 	private Predicate pred;
@@ -67,7 +67,11 @@ public class QueryData {
 		this.sortDirs = sortDirs;
 		this.explainFlag = explainFlag;
 	}
-
+	
+	public boolean explainFlag() {
+		return explainFlag;
+	}
+	
 	/**
 	 * Returns the fields mentioned in the select clause.
 	 * 
