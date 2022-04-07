@@ -53,9 +53,11 @@ public class QueryData {
 	 *            a list of field names for sorting
 	 * @param sortDirs
 	 *            a list of sort directions
+	 * @param explainFlag
+	 *            a flag that tells if we are doing explain
 	 */
-	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
-			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred, Set<String> groupFields, 
+			Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs, boolean explainFlag) {
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -63,6 +65,7 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+		this.explainFlag = explainFlag;
 	}
 
 	/**
@@ -132,6 +135,9 @@ public class QueryData {
 
 	public String toString() {//add explain to result? no need?
 		StringBuilder result = new StringBuilder();;
+		if(explainFlag == true){
+			result.append("explain ");
+		}
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");
