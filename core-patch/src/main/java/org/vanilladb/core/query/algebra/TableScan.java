@@ -15,8 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
-import java.util.HashSet;
-
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.storage.metadata.TableInfo;
@@ -32,7 +30,6 @@ import org.vanilladb.core.storage.tx.Transaction;
 public class TableScan implements UpdateScan {
 	private RecordFile rf;
 	private Schema schema;
-	private HashSet<RecordId> recordIds = new HashSet<RecordId>();
 
 	/**
 	 * Creates a new table scan, and opens its corresponding record file.
@@ -56,14 +53,7 @@ public class TableScan implements UpdateScan {
 
 	@Override
 	public boolean next() {
-		if(rf.next()) {
-			recordIds.add(rf.currentRecordId());
-			return true;
-		}
-		else {
-			ExplainScan.addRecordCount(recordIds.size());
-			return false;
-		}
+		return rf.next();
 	}
 
 	@Override

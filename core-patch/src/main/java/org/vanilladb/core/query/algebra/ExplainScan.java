@@ -7,7 +7,6 @@ public class ExplainScan implements Scan {
 	private Scan s;
 	private ExplainPlan explainPlan;
 	private String queryData = ""; // The result of the explain query
-	private static int recordsAccessed;
 	
 
 	/**
@@ -36,8 +35,8 @@ public class ExplainScan implements Scan {
 	@Override
 	public boolean next() {
 		if(queryData.isEmpty()) {
-			recordsAccessed = 0; // Clear records
-			while(s.next()); // Keep invoking next() to count records accessed.
+			int recordsAccessed = 0; // Clear records
+			while(s.next()) recordsAccessed++; // Keep invoking next() to count records accessed.
 			StringBuilder sb = new StringBuilder();
 			explainPlan.explain(sb, 0); // Guarantees to make sb have length greater than 0, because there is at least the explain plan.
 			sb.append("Actual #recs: ")
@@ -57,11 +56,6 @@ public class ExplainScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) {
 		return fldName == "query-data";
-	}
-	
-	public static void addRecordCount(int c) {
-		if(c < 0) throw new IllegalArgumentException();
-		recordsAccessed += c;
 	}
 	
 	
