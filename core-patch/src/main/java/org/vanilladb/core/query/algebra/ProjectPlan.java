@@ -112,5 +112,15 @@ public class ProjectPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String getExplainString(int level) {
+		// repeat "\t" level times
+		String tabs = new String(new char[level]).replace("\0", "\t");
+		String result_string = tabs + String.format("->ProjectPlan (#blks=%d, #recs=%d)\n",
+				blocksAccessed(), recordsOutput());
+		return result_string + p.getExplainString(level + 1);
+
+	}
+
 
 }

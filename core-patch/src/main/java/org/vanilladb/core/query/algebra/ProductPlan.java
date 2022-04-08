@@ -139,5 +139,13 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String getExplainString(int level) {
+		// repeat "\t" level times
+		String tabs = new String(new char[level]).replace("\0", "\t");
+		return tabs + String.format("->ProductPlan (#blks=%d, #recs=%d)\n",
+				blocksAccessed(), recordsOutput()) + p1.getExplainString(level+1) + p2.getExplainString(level+1);
+	}
+
 
 }

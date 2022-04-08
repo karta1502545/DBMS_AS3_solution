@@ -333,6 +333,15 @@ public class GroupByPlan extends ReduceRecordsPlan {
 	}
 
 	@Override
+	public String getExplainString(int level) {
+		// repeat "\t" level times
+		String tabs = new String(new char[level]).replace("\0", "\t");
+		String result_string = tabs + String.format("->GroupByPlan (#blks=%d, #recs=%d)\n",
+				blocksAccessed(), recordsOutput());
+		return result_string + sp.getExplainString(level + 1);
+	}
+
+	@Override
 	public String toString() {
 		String c = sp.toString();
 		String[] cs = c.split("\n");

@@ -97,5 +97,12 @@ public class TablePlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String getExplainString(int level) {
+		// repeat "\t" level times
+		String tabs = new String(new char[level]).replace("\0", "\t");
+		return tabs + String.format("->TablePlan on (%s) (#blks=%d, #recs=%d)\n",
+				ti.tableName(), blocksAccessed(), recordsOutput());
+	}
 
 }
