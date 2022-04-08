@@ -17,18 +17,18 @@ public class ExplainPlan implements Plan {
 
 
 
-	public static Histogram explainHistogram(Histogram hist, Set<String> fldNames) {
-		Histogram expHist = new Histogram(fldNames);
-		for (String fld : fldNames) {
-			expHist.setBuckets(fld, hist.buckets(fld));
-		}
-		return expHist;
-	}
+	// public static Histogram explainHistogram(Histogram hist, Set<String> fldNames) {
+	// 	Histogram expHist = new Histogram(fldNames);
+	// 	for (String fld : fldNames) {
+	// 		expHist.setBuckets(fld, hist.buckets(fld));
+	// 	}
+	// 	return expHist;
+	// }
 
 
 	private Plan p;
 	private Schema schema = new Schema();
-	private Histogram hist;
+	private Histogram hist = null;
 	private Transaction tx;
 	private TempTable expTempTable = null;
 	private TableScan expTableScan = null;
@@ -44,11 +44,11 @@ public class ExplainPlan implements Plan {
 		this.tx = tx;
 		for (String fldname : fldNames)
 			schema.addField(fldname, VARCHAR(500));
-		hist = explainHistogram(p.histogram(), fldNames);
+		// hist = explainHistogram(p.histogram(), fldNames);
 		System.out.println("in explain plan ctor");
 		System.out.println("pseudo");
 		System.out.println(toString());
-		expTempTable = new TempTable(schema, tx);
+		expTempTable = new TempTable(schema, this.tx);
 		expTableScan = (TableScan) expTempTable.open();
 		expTableScan.insert();
 		expTableScan.setVal("query-plan", (Constant) new VarcharConstant(toString()));
@@ -78,8 +78,15 @@ public class ExplainPlan implements Plan {
 
 	@Override
 	public long recordsOutput() {
-		
-		return (long) histogram().recordsOutput();
+		// use the real result set to calculate actual records
+		// return p.recordsOutput();
+		Scan s = p.open();
+		long actRecs = 0;
+		s.beforeFirst();
+		while (s.next()) {
+			actRecs++;
+		}
+		return actRecs;
 	}
 
 	@Override
@@ -95,7 +102,7 @@ public class ExplainPlan implements Plan {
 			// sb.append("\t").append(child).append("\n");
 		// ;
 		sb.append(c);
-		sb.append("Actual #recs:");
+		sb.append("Actual #recs:"+recordsOutput());
 		return sb.toString();
 	}
 
