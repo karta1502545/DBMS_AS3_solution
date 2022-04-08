@@ -152,10 +152,10 @@ public class ProductPlan implements Plan {
 		sb.append("->");
 		sb.append("ProductPlan (#blks=" + blocksAccessed() + ", #recs="
 				+ recordsOutput() + ")\n");
-		for (String child : cs1)
+		for (String child : cs2)
 			sb.append("\t").append(child).append("\n");
 		;
-		for (String child : cs2)
+		for (String child : cs1)
 			sb.append("\t").append(child).append("\n");
 		;
 		return sb.toString();
