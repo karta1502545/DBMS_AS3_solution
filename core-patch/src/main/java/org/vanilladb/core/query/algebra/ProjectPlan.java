@@ -31,9 +31,9 @@ public class ProjectPlan implements Plan {
 	 * fields.
 	 * 
 	 * @param hist
-	 *            the input join distribution of field values
+	 *                 the input join distribution of field values
 	 * @param fldNames
-	 *            the names of fields to project to
+	 *                 the names of fields to project to
 	 * @return join distribution of projected values
 	 */
 	public static Histogram projectHistogram(Histogram hist,
@@ -53,9 +53,9 @@ public class ProjectPlan implements Plan {
 	 * subquery and field list.
 	 * 
 	 * @param p
-	 *            the subquery
+	 *                 the subquery
 	 * @param fldNames
-	 *            the list of fields
+	 *                 the list of fields
 	 */
 	public ProjectPlan(Plan p, Set<String> fldNames) {
 		this.p = p;
@@ -112,5 +112,18 @@ public class ProjectPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	// [mod] add toString
+	@Override
+	public String toString() {
+		String c = p.toString();
+		String[] cs = c.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("ProjectPlan (#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		for (String child : cs)
+			sb.append("\t").append(child).append("\n");
+		;
+		return sb.toString();
+	}
 }
