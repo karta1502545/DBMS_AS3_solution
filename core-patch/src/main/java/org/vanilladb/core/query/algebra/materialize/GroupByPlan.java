@@ -238,8 +238,6 @@ public class GroupByPlan extends ReduceRecordsPlan {
 		return new Bucket(maxRange, numGroups, Math.min(numGroups, dv));
 	}
 
-	private
-
 	private Plan sp;
 	private Set<String> groupFlds;
 	private Set<AggregationFn> aggFns;
