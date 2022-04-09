@@ -28,6 +28,7 @@ import org.vanilladb.core.sql.predicate.Predicate;
  * Data for the SQL <em>select</em> statements.
  */
 public class QueryData {
+	private boolean explain;
 	private Set<String> projFields;
 	private Set<String> tables;
 	private Predicate pred;
@@ -38,6 +39,8 @@ public class QueryData {
 
 	/**
 	 * Saves the information of a SQL query.
+	 * @param explain
+	 *            control cmd is show planning tree
 	 * @param projFields
 	 *            a collection of field names
 	 * @param tables
@@ -53,8 +56,9 @@ public class QueryData {
 	 * @param sortDirs
 	 *            a list of sort directions
 	 */
-	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
+	public QueryData(boolean explain,Set<String> projFields, Set<String> tables, Predicate pred,
 			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+		this.explain=explain;
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -128,9 +132,14 @@ public class QueryData {
 	public Set<AggregationFn> aggregationFn() {
 		return aggFn;
 	}
+	public boolean isexplain() {
+		return explain;
+	}
 
 	public String toString() {
-		StringBuilder result = new StringBuilder();;
+		StringBuilder result = new StringBuilder();
+		if (explain)
+			result.append("explain ");
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");
