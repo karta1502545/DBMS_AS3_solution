@@ -31,7 +31,7 @@ public class JdbcStatement extends StatementAdapter {
 
 	public ResultSet executeQuery(String qry) throws SQLException {
 		try {
-			RemoteResultSet rrs = rstmt.executeQuery(qry);
+			RemoteResultSet rrs = qry.startsWith("EXPLAIN") ? rstmt.executeExplain(qry) : rstmt.executeQuery(qry);
 			return new JdbcResultSet(rrs);
 		} catch (Exception e) {
 			throw new SQLException(e);

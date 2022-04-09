@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.core.remote.jdbc;
+package org.vanilladb.core.query.planner;
 
-import java.rmi.Remote;
-import java.rmi.RemoteException;
+import org.vanilladb.core.query.algebra.Plan;
+import org.vanilladb.core.query.parse.ExplainData;
+import org.vanilladb.core.storage.tx.Transaction;
 
 /**
- * The RMI remote interface corresponding to Statement. The methods are
- * identical to those of Statement, except that they throw RemoteExceptions
- * instead of SQLExceptions.
+ * The interface implemented by planners for the SQL select statements.
  */
-public interface RemoteStatement extends Remote {
-	RemoteResultSet executeExplain(String qry) throws RemoteException;
+public interface ExplainPlanner {
 
-	RemoteResultSet executeQuery(String qry) throws RemoteException;
-
-	int executeUpdate(String cmd) throws RemoteException;
+	/**
+	 * Creates a plan for the explain query.
+	 * 
+	 * @param data
+	 *            the parsed representation of the query
+	 * @param tx
+	 *            the calling transaction
+	 * @return a plan for that query
+	 */
+	Plan explainQuery(ExplainData data, Transaction tx);
 }

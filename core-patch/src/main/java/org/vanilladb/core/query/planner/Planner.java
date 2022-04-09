@@ -25,6 +25,7 @@ import org.vanilladb.core.query.parse.DropIndexData;
 import org.vanilladb.core.query.parse.DeleteData;
 import org.vanilladb.core.query.parse.InsertData;
 import org.vanilladb.core.query.parse.ModifyData;
+import org.vanilladb.core.query.parse.ExplainData;
 import org.vanilladb.core.query.parse.Parser;
 import org.vanilladb.core.query.parse.QueryData;
 import org.vanilladb.core.storage.tx.Transaction;
@@ -37,10 +38,28 @@ import org.vanilladb.core.storage.tx.Transaction;
 public class Planner {
 	private QueryPlanner qPlanner;
 	private UpdatePlanner uPlanner;
+	private ExplainPlanner ePlanner;
 
-	public Planner(QueryPlanner qPlanner, UpdatePlanner uPlanner) {
+	public Planner(QueryPlanner qPlanner, UpdatePlanner uPlanner, ExplainPlanner ePlanner) {
 		this.qPlanner = qPlanner;
 		this.uPlanner = uPlanner;
+		this.ePlanner = ePlanner;
+	}
+
+	/**
+	 * Creates a explain plan for an SQL select statement, using the supplied planner.
+	 * 
+	 * @param qry
+	 *            the SQL query string
+	 * @param tx
+	 *            the transaction
+	 * @return the scan corresponding to the query plan
+	 */
+	public Plan createExplainPlan(String qry, Transaction tx) {
+		Parser parser = new Parser(qry);
+		ExplainData data = parser.explainCommand();
+		Verifier.verifyExplainData(data, tx);
+		return ePlanner.explainQuery(data, tx);
 	}
 
 	/**

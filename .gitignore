@@ -7,3 +7,5 @@
 /.metadata/
 
 .DS_STORE
+.vscode
+as3_DB

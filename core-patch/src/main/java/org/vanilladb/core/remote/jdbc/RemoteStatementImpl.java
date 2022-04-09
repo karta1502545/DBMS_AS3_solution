@@ -40,6 +40,25 @@ class RemoteStatementImpl extends UnicastRemoteObject implements
 	 * planner to create a plan for the query. It then sends the plan to the
 	 * RemoteResultSetImpl constructor for processing.
 	 * 
+	 * @see RemoteStatement#executeExplain(java.lang.String)
+	 */
+	@Override
+	public RemoteResultSet executeExplain(String qry) throws RemoteException {
+		try {
+			Transaction tx = rconn.getTransaction();
+			Plan pln = VanillaDb.newPlanner().createExplainPlan(qry, tx);
+			return new RemoteResultSetImpl(pln, rconn);
+		} catch (RuntimeException e) {
+			rconn.rollback();
+			throw e;
+		}
+	}
+
+	/**
+	 * Executes the specified SQL query string. The method calls the query
+	 * planner to create a plan for the query. It then sends the plan to the
+	 * RemoteResultSetImpl constructor for processing.
+	 * 
 	 * @see RemoteStatement#executeQuery(java.lang.String)
 	 */
 	@Override

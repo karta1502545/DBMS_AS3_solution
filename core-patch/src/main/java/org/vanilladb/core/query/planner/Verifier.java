@@ -28,6 +28,7 @@ import org.vanilladb.core.query.parse.DropTableData;
 import org.vanilladb.core.query.parse.DropViewData;
 import org.vanilladb.core.query.parse.InsertData;
 import org.vanilladb.core.query.parse.ModifyData;
+import org.vanilladb.core.query.parse.ExplainData;
 import org.vanilladb.core.query.parse.Parser;
 import org.vanilladb.core.query.parse.QueryData;
 import org.vanilladb.core.server.VanillaDb;
@@ -46,6 +47,76 @@ import org.vanilladb.core.storage.tx.Transaction;
  * 
  */
 public class Verifier {
+
+	public static void verifyExplainData(ExplainData data, Transaction tx) {
+		List<Schema> schs = new ArrayList<Schema>(data.tables().size());
+		List<QueryData> views = new ArrayList<QueryData>(data.tables().size());
+
+		// examine the table name
+		for (String tblName : data.tables()) {
+			String viewdef = VanillaDb.catalogMgr().getViewDef(tblName, tx);
+			if (viewdef == null) {
+				TableInfo ti = VanillaDb.catalogMgr().getTableInfo(tblName, tx);
+				if (ti == null)
+					throw new BadSemanticException("table " + tblName
+							+ " does not exist");
+				schs.add(ti.schema());
+			} else {
+				Parser parser = new Parser(viewdef);
+				views.add(parser.queryCommand());
+			}
+		}
+
+		// examine the projecting field name
+		for (String fldName : data.projectFields()) {
+			boolean isValid = verifyField(schs, views, fldName);
+			if (!isValid && data.aggregationFn() != null)
+				for (AggregationFn aggFn : data.aggregationFn())
+					if (fldName.compareTo(aggFn.fieldName()) == 0) {
+						isValid = true;
+						break;
+					}
+			if (!isValid)
+				throw new BadSemanticException("field " + fldName
+						+ " does not exist");
+		}
+
+		// examine the aggregation field name
+		if (data.aggregationFn() != null)
+			for (AggregationFn aggFn : data.aggregationFn()) {
+				String aggFld = aggFn.argumentFieldName();
+				if (!verifyField(schs, views, aggFld))
+					throw new BadSemanticException("field " + aggFld
+							+ " does not exist");
+			}
+
+		// examine the grouping field name
+		if (data.groupFields() != null)
+			for (String groupByFld : data.groupFields()) {
+				if (!verifyField(schs, views, groupByFld))
+					throw new BadSemanticException("field " + groupByFld
+							+ " does not exist");
+			}
+
+		// Examine the sorting field name
+		if (data.sortFields() != null)
+			for (String sortFld : data.sortFields()) {
+				boolean isValid = verifyField(schs, views, sortFld);
+				
+				// aggregation field may appear after order by
+				// example: select count(fld1), fld2 from table group by fld2 order by count(fld1);
+				// we need the following checks to make count(fld1) valid
+				if (!isValid && data.aggregationFn() != null)
+					for (AggregationFn aggFn : data.aggregationFn())
+						if (sortFld.compareTo(aggFn.fieldName()) == 0) {
+							isValid = true;
+							break;
+						}
+				if (!isValid)
+					throw new BadSemanticException("field " + sortFld
+							+ " does not exist");
+			}
+	}
 
 	public static void verifyQueryData(QueryData data, Transaction tx) {
 		List<Schema> schs = new ArrayList<Schema>(data.tables().size());

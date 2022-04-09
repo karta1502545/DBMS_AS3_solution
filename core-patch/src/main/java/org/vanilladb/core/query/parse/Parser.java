@@ -224,6 +224,47 @@ public class Parser {
 	}
 
 	/*
+	 * Methods for parsing explain queries.
+	 */
+	public ExplainData explainCommand() {
+		lex.eatKeyword("explain");
+		lex.eatKeyword("select");
+		ProjectList projs = projectList();
+		lex.eatKeyword("from");
+		Set<String> tables = idSet();
+		Predicate pred = new Predicate();
+		if (lex.matchKeyword("where")) {
+			lex.eatKeyword("where");
+			pred = predicate();
+		}
+		/*
+		* Non-null group-by fields (but may be empty) if "group by" appears or
+		* there is an aggFn in the project list.
+		*/
+		Set<String> groupFields = null;
+		if (lex.matchKeyword("group")) {
+			lex.eatKeyword("group");
+			lex.eatKeyword("by");
+			groupFields = idSet();
+		}
+		if (groupFields == null && projs.aggregationFns() != null)
+			groupFields = new HashSet<String>();
+		// Need to preserve the order of sort fields
+		List<String> sortFields = null;
+		List<Integer> sortDirs = null;
+		if (lex.matchKeyword("order")) {
+			lex.eatKeyword("order");
+			lex.eatKeyword("by");
+			// neither null nor empty if "sort by" appears
+			SortList sortList = sortList();
+			sortFields = sortList.fieldList();
+			sortDirs = sortList.directionList();
+		}
+		return new ExplainData(projs.asStringSet(), tables, pred,
+				groupFields, projs.aggregationFns(), sortFields, sortDirs);
+	}
+
+	/*
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
