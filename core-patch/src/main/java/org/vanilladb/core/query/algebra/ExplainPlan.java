@@ -16,6 +16,7 @@
 package org.vanilladb.core.query.algebra;
 
 import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 import java.util.Set;
@@ -26,6 +27,7 @@ import java.util.Set;
  */
 public class ExplainPlan implements Plan {
 	private Plan p;
+	private Schema schema;
 
 	/**
 	 * Creates a new project node in the query tree, having the specified
@@ -35,6 +37,8 @@ public class ExplainPlan implements Plan {
 	 *            the subquery
 	 */
 	public ExplainPlan(Plan p) {
+		this.schema = new Schema();
+		this.schema.addField("query-plan", Type.VARCHAR(500));
 		this.p = p;
 	}
 
