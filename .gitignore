@@ -5,3 +5,7 @@
 /**/.classpath
 /**/.project
 /.metadata/
+
+.idea/
+.DS_Store
+*.iml
