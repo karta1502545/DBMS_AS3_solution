@@ -61,6 +61,4 @@ public interface Plan {
 	 * @return the estimated number of output records
 	 */
 	long recordsOutput();
-	
-	String toString() ;
 }
