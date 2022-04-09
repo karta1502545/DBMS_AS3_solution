@@ -79,12 +79,19 @@ public class ExplainScan implements Scan {
 	public boolean hasField(String fldName) { return s.hasField(fldName); }
 
 	private String getExplainString() {
-		String ans = getRecursiveExplainString(this.explainTree);
+		String ans = getRecursiveExplainString(0, this.explainTree);
 		ans += String.format("Actual #recs: %d\n", this.explainTree.getOutputRecords());
 		return ans;
 	}
 
-	private static String getRecursiveExplainString(ExplainTree et) {
+	private static String indentHierarchy(int dep) {
+		String ans = "";
+		for(int i = 0; i < dep; i++)
+			ans += "\t";
+		return ans;
+	}
+
+	private static String getRecursiveExplainString(int dep, ExplainTree et) {
 		String ans = String.format(
 				"-> %s %s (#blks=%d, #recs=%d)\n",
 				et.getPlanType(),
@@ -92,8 +99,9 @@ public class ExplainScan implements Scan {
 				et.getBlocksAccessed(),
 				et.getOutputRecords()
 		);
+		dep += 1;
 		for(ExplainTree e : et.getChildren())
-			ans += "\t" + getRecursiveExplainString(e);
+			ans += indentHierarchy(dep) + getRecursiveExplainString(dep, e);
 		return ans;
 	}
 }
