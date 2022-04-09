@@ -136,11 +136,6 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 	}
 
 	@Override
-	public ExplainTree explainTree() {
-		return null;
-	}
-
-	@Override
 	public long recordsOutput() {
 		return (int) hist.recordsOutput();
 	}
