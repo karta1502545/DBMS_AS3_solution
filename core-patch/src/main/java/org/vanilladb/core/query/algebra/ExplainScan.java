@@ -18,6 +18,7 @@ package org.vanilladb.core.query.algebra;
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.Type;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 
 /**
@@ -59,7 +60,10 @@ public class ExplainScan implements Scan {
 	@Override
 	public Constant getVal(String fldName) {
 		if (fldName.equals("query-plan"))
-			return Constant.newInstance(Type.VARCHAR, getExplainString());
+			return Constant.newInstance(
+					Type.VARCHAR,
+					getExplainString(explainTree).getBytes(StandardCharsets.US_ASCII)
+			);
 		else if (hasField(fldName))
 			return s.getVal(fldName);
 		else
@@ -74,7 +78,16 @@ public class ExplainScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) { return s.hasField(fldName); }
 
-	private byte[] getExplainString() {
-		return new byte[0];
+	private static String getExplainString(ExplainTree et) {
+		String ans = String.format(
+				"-> %s %s (#blks=%d, #recs=%d)\n",
+				et.getPlanType(),
+				et.getDetails(),
+				et.getBlocksAccessed(),
+				et.getOutputRecords()
+		);
+		for(ExplainTree e : et.getChildren())
+			ans += "\t" + getExplainString(e);
+		return ans;
 	}
 }
