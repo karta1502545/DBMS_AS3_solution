@@ -230,6 +230,11 @@ public class Parser {
 	// TODO: add explain to queryCommand
 	// TODO: fix QueryData
 	public QueryData queryCommand() {
+		boolean explainBool = false;
+		if (lex.matchKeyword("explain")) {
+			lex.eatKeyword("explain");
+			explainBool = true;
+		}
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
 		lex.eatKeyword("from");
