@@ -46,7 +46,7 @@ public class ExplainPlan implements Plan {
 	@Override
 	public Scan open() {
 		Scan s = p.open();
-		return new ExplainScan(s, p.explainTree);
+		return new ExplainScan(s, explainTree());
 	}
 
 	/**
@@ -86,5 +86,6 @@ public class ExplainPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	@Override
+	public ExplainTree explainTree() { return p.explainTree(); }
 }
