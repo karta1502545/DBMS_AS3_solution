@@ -372,6 +372,18 @@ public class SelectPlan extends ReduceRecordsPlan {
 		return hist;
 	}
 
+	/**
+	 * Returns the explain tree data with the estimated number of
+	 * blocks and records for each plan.
+	 *
+	 * @return the explain tree
+	 */
+	@Override
+	public ExplainTree explainTree() {
+		// TODO
+		return null;
+	}
+
 	@Override
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
