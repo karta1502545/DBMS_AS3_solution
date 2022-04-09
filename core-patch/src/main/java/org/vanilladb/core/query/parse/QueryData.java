@@ -35,6 +35,7 @@ public class QueryData {
 	private Set<AggregationFn> aggFn;
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
+	private boolean explainBool;
 
 	// TODO: add new attribute explainBool
 	// TODO: add explainBool to constructor
@@ -57,7 +58,7 @@ public class QueryData {
 	 *            a list of sort directions
 	 */
 	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
-			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs, boolean explainBool) {
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -65,6 +66,7 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+		this.explainBool = explainBool;
 	}
 
 	/**
@@ -133,11 +135,19 @@ public class QueryData {
 	}
 
 	// TODO: add explainBool getter
+	/**
+	 * Returns the boolean of explain or not.
+	 *
+	 * @return a boolean
+	 */
+	public boolean explainBool() { return explainBool; }
 
 	// TODO: add explain to toString
 
 	public String toString() {
 		StringBuilder result = new StringBuilder();;
+		if (explainBool)
+			result.append("explain ");
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");
