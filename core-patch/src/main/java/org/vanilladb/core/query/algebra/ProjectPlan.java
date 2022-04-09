@@ -29,7 +29,7 @@ public class ProjectPlan implements Plan {
 	 * Returns a histogram that approximates the join frequency distribution of
 	 * the projected values from the specified histograms onto the specified
 	 * fields.
-	 * 
+	 *
 	 * @param hist
 	 *            the input join distribution of field values
 	 * @param fldNames
@@ -44,6 +44,7 @@ public class ProjectPlan implements Plan {
 		return pjtHist;
 	}
 
+
 	private Plan p;
 	private Schema schema = new Schema();
 	private Histogram hist;
@@ -51,7 +52,7 @@ public class ProjectPlan implements Plan {
 	/**
 	 * Creates a new project node in the query tree, having the specified
 	 * subquery and field list.
-	 * 
+	 *
 	 * @param p
 	 *            the subquery
 	 * @param fldNames
@@ -64,9 +65,10 @@ public class ProjectPlan implements Plan {
 		hist = projectHistogram(p.histogram(), fldNames);
 	}
 
+
 	/**
 	 * Creates a project scan for this query.
-	 * 
+	 *
 	 * @see Plan#open()
 	 */
 	@Override
@@ -78,7 +80,7 @@ public class ProjectPlan implements Plan {
 	/**
 	 * Estimates the number of block accesses in the projection, which is the
 	 * same as in the underlying query.
-	 * 
+	 *
 	 * @see Plan#blocksAccessed()
 	 */
 	@Override
@@ -88,7 +90,7 @@ public class ProjectPlan implements Plan {
 
 	/**
 	 * Returns the schema of the projection, which is taken from the field list.
-	 * 
+	 *
 	 * @see Plan#schema()
 	 */
 	@Override
@@ -99,7 +101,7 @@ public class ProjectPlan implements Plan {
 	/**
 	 * Returns the histogram that approximates the join distribution of the
 	 * field values of query results.
-	 * 
+	 *
 	 * @see Plan#histogram()
 	 */
 	@Override
@@ -115,8 +117,12 @@ public class ProjectPlan implements Plan {
 	 */
 	@Override
 	public ExplainTree explainTree() {
-		// TODO
-		return null;
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+		ExplainTree child = p.explainTree();
+		et.addChild(child);
+		return et;
 	}
 
 	@Override
