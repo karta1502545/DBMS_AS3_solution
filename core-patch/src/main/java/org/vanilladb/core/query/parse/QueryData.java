@@ -36,6 +36,9 @@ public class QueryData {
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
 
+	// TODO: add new attribute explainBool
+	// TODO: add explainBool to constructor
+
 	/**
 	 * Saves the information of a SQL query.
 	 * @param projFields
@@ -128,6 +131,10 @@ public class QueryData {
 	public Set<AggregationFn> aggregationFn() {
 		return aggFn;
 	}
+
+	// TODO: add explainBool getter
+
+	// TODO: add explain to toString
 
 	public String toString() {
 		StringBuilder result = new StringBuilder();;
