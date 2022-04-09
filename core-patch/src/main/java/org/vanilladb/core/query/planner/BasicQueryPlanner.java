@@ -18,7 +18,7 @@ package org.vanilladb.core.query.planner;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.ProductPlan;
 import org.vanilladb.core.query.algebra.ProjectPlan;
@@ -66,6 +66,10 @@ public class BasicQueryPlanner implements QueryPlanner {
 		// Step 6: Add a sort plan if specified
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
+		
+		// as3: explain
+		if (data.isExplainQuery())
+			p = new ExplainPlan(p) ;
 
 		return p;
 	}
