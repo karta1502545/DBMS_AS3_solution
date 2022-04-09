@@ -81,7 +81,7 @@ public class ConsoleSQLInterpreter {
 				totalwidth += width;
 				String fmt = "%" + width + "s";
 				if (cmdf.startsWith("EXPLAIN"))
-					System.out.format(fmt, md.getColumnName(i));
+					System.out.format("%s", md.getColumnName(i));
 				else
 					System.out.format(fmt, md.getColumnName(i));
 			}
@@ -89,8 +89,8 @@ public class ConsoleSQLInterpreter {
 			System.out.println();
 			for (int i = 0; i < totalwidth; i++)
 				System.out.print("-");
-//			if (!cmdf.startsWith("EXPLAIN"))
-			System.out.println();
+			if (!cmdf.startsWith("EXPLAIN"))
+				System.out.println();
 
 			rs.beforeFirst();
 			// print records
