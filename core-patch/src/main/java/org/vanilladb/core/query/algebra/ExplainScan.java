@@ -15,31 +15,30 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
-import java.util.Collection;
-
 import org.vanilladb.core.sql.Constant;
+import org.vanilladb.core.sql.Type;
+
+import java.util.Collection;
 
 /**
  * The scan class corresponding to the <em>project</em> relational algebra
  * operator. All methods except hasField delegate their work to the underlying
  * scan.
  */
-public class ProjectScan implements Scan {
+public class ExplainScan implements Scan {
 	private Scan s;
-	private Collection<String> fieldList;
+	private ExplainTree explainTree;
 
 	/**
 	 * Creates a project scan having the specified underlying scan and field
 	 * list.
-	 * 
+	 *
 	 * @param s
 	 *            the underlying scan
-	 * @param fieldList
-	 *            the list of field names
 	 */
-	public ProjectScan(Scan s, Collection<String> fieldList) {
+	public ExplainScan(Scan s, ExplainTree et) {
 		this.s = s;
-		this.fieldList = fieldList;
+		this.explainTree = et;
 	}
 
 	@Override
@@ -59,7 +58,9 @@ public class ProjectScan implements Scan {
 
 	@Override
 	public Constant getVal(String fldName) {
-		if (hasField(fldName))
+		if (fldName.equals("query-plan"))
+			return Constant.newInstance(Type.VARCHAR, getExplainString());
+		else if (hasField(fldName))
 			return s.getVal(fldName);
 		else
 			throw new RuntimeException("field " + fldName + " not found.");
@@ -68,10 +69,12 @@ public class ProjectScan implements Scan {
 	/**
 	 * Returns true if the specified field is in the projection list.
 	 * 
-	 * @see Scan#hasField(java.lang.String)
+	 * @see Scan#hasField(String)
 	 */
 	@Override
-	public boolean hasField(String fldName) {
-		return fieldList.contains(fldName);
+	public boolean hasField(String fldName) { return s.hasField(fldName); }
+
+	private byte[] getExplainString() {
+		return new byte[0];
 	}
 }
