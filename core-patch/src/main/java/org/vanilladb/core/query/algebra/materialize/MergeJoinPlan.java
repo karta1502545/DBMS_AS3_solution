@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.vanilladb.core.query.algebra.AbstractJoinPlan;
+import org.vanilladb.core.query.algebra.ExplainTree;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.Schema;
@@ -112,6 +113,17 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 	@Override
 	public Histogram histogram() {
 		return hist;
+	}
+
+	/**
+	 * Returns the explain tree data with the estimated number of
+	 * blocks and records for each plan.
+	 *
+	 * @return the explain tree
+	 */
+	@Override
+	public ExplainTree explainTree() {
+		return null;
 	}
 
 	@Override
