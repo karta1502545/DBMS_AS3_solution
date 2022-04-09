@@ -139,7 +139,7 @@ public class ProductPlan implements Plan {
 	public ExplainTree explainTree() {
 		long blks = this.blocksAccessed();
 		long recs = this.recordsOutput();
-		ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+		ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), null, blks, recs);
 
 		ExplainTree c1 = p1.explainTree();
 		ExplainTree c2 = p2.explainTree();

@@ -119,7 +119,7 @@ public class ProjectPlan implements Plan {
 	public ExplainTree explainTree() {
 		long blks = this.blocksAccessed();
 		long recs = this.recordsOutput();
-		ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+		ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), null, blks, recs);
 		ExplainTree child = p.explainTree();
 		et.addChild(child);
 		return et;
