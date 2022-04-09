@@ -7,10 +7,10 @@ public class ExplainTree {
     private final List<ExplainTree> children;
     private final String planType;
     private final String details;
-    private final Integer blks;
-    private final Integer recs;
+    private final long blks;
+    private final long recs;
 
-    public ExplainTree(String planType, String details, Integer blks, Integer recs) {
+    public ExplainTree(String planType, String details, long blks, long recs) {
         this.children = new ArrayList<>();
         this.planType = planType;
         this.details = details;
@@ -28,8 +28,8 @@ public class ExplainTree {
 
     public String getDetails() { return this.details; }
 
-    public Integer getBlocksAccessed() { return this.blks; }
+    public long getBlocksAccessed() { return this.blks; }
 
-    public Integer getOutputRecords() { return this.recs; }
+    public long getOutputRecords() { return this.recs; }
 
 }
