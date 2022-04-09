@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.vanilladb.core.query.algebra.ExplainTree;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.ReduceRecordsPlan;
 import org.vanilladb.core.query.algebra.Scan;
@@ -325,6 +326,18 @@ public class GroupByPlan extends ReduceRecordsPlan {
 	@Override
 	public Histogram histogram() {
 		return hist;
+	}
+
+	/**
+	 * Returns the explain tree data with the estimated number of
+	 * blocks and records for each plan.
+	 *
+	 * @return the explain tree
+	 */
+	@Override
+	public ExplainTree explainTree() {
+		// TODO
+		return null;
 	}
 
 	@Override
