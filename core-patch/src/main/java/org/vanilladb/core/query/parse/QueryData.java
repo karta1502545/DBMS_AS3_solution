@@ -40,6 +40,9 @@ public class QueryData {
 	// TODO: add new attribute explainBool
 	// TODO: add explainBool to constructor
 
+	// TODO: add new attribute explainBool
+	// TODO: add explainBool to constructor
+
 	/**
 	 * Saves the information of a SQL query.
 	 * @param projFields
