@@ -5,16 +5,17 @@ import org.vanilladb.core.sql.VarcharConstant;
 
 public class ExplainScan implements Scan {
 	private Scan s;
-	private Constant explain_val ;
+	private String explain_msg ;
 	private boolean before_first;
 	
 	public ExplainScan(Scan s, String explain_msg) {
 		this.s = s;
-		this.explain_val = new VarcharConstant(explain_msg);
+		this.explain_msg = explain_msg ;
 	}
 
 	@Override
 	public void beforeFirst() {
+		s.beforeFirst();
 		before_first = true ;
 	}
 
@@ -35,7 +36,13 @@ public class ExplainScan implements Scan {
 	@Override
 	public Constant getVal(String fldName) {
 		if (hasField(fldName)) {
-			return explain_val ;
+			int actual_recs = 0 ;
+			StringBuilder sb = new StringBuilder();
+			while (s.next()) {
+				actual_recs++ ;
+			}
+			sb.append(explain_msg).append("Actual #recs: " + actual_recs + "\n") ;
+			return new VarcharConstant(sb.toString()) ;
 		}
 		else
 			throw new RuntimeException("field " + fldName + " not found in explain.");
