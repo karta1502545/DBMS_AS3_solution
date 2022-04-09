@@ -56,11 +56,60 @@ public class ExplainScanTest {
 		tx = VanillaDb.txMgr().newTransaction(
 				Connection.TRANSACTION_SERIALIZABLE, false);
 		et = new ExplainTree(
-				"HAHA type",
+				"ProjectPlan",
+				"",
+				2,
+				1
+		);
+		ExplainTree gb = new ExplainTree(
+				"GroupByPlan",
+				":",
+				2,
+				1
+		);
+		ExplainTree sp = new ExplainTree(
+				"SortPlan",
+				"",
+				2,
+				10
+		);
+		ExplainTree selp = new ExplainTree(
+				"SelectPlan",
+				"pred:(d_w_id=w_id)",
+				22,
+				10
+		);
+		ExplainTree pp = new ExplainTree(
+				"ProductPlan",
+				"",
+				22,
+				10
+		);
+		ExplainTree et3_clone = new ExplainTree(
+				"[HAHA type depth = 2]",
 				"HAHA detail",
-				3,
+				1024,
 				4
 		);
+		ExplainTree tp1  = new ExplainTree(
+				"TablePlan",
+				"on (warehouse)",
+				2,
+				1
+		);
+		ExplainTree tp2  = new ExplainTree(
+				"TablePlan",
+				"on (district)",
+				2,
+				10
+		);
+		pp.addChild(tp1);
+		pp.addChild(tp2);
+		selp.addChild(et3_clone);
+		selp.addChild(pp);
+		sp.addChild(selp);
+		gb.addChild(sp);
+		et.addChild(gb);
 	}
 	
 	@After
@@ -76,10 +125,10 @@ public class ExplainScanTest {
 		Parser psr = new Parser(qry);
 		QueryData qd = psr.queryCommand();
 		Plan p = new BasicQueryPlanner().createPlan(qd, tx);
-		ExplainScan es = new ExplainScan(
-				p.open(),
-				et
+		ExplainPlan ep = new ExplainPlan(
+				p
 		);
+		Scan es = new ExplainScan(p.open(), et);
 		System.out.println(es.getVal("query-plan"));
 	}
 }
