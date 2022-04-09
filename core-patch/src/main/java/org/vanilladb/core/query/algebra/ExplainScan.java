@@ -79,7 +79,7 @@ public class ExplainScan implements Scan {
 	public boolean hasField(String fldName) { return s.hasField(fldName); }
 
 	private String getExplainString() {
-		String ans = getRecursiveExplainString(0, this.explainTree);
+		String ans = "\n" + getRecursiveExplainString(0, this.explainTree);
 		ans += String.format("Actual #recs: %d\n", this.explainTree.getOutputRecords());
 		return ans;
 	}
