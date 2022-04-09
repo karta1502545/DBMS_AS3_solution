@@ -62,7 +62,7 @@ public class ExplainScan implements Scan {
 		if (fldName.equals("query-plan"))
 			return Constant.newInstance(
 					Type.VARCHAR,
-					getExplainString()
+					getExplainString().getBytes()
 			);
 		else if (hasField(fldName))
 			return s.getVal(fldName);
@@ -78,10 +78,10 @@ public class ExplainScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) { return s.hasField(fldName); }
 
-	private byte[] getExplainString() {
+	private String getExplainString() {
 		String ans = getRecursiveExplainString(this.explainTree);
 		ans += String.format("Actual #recs: %d\n", this.explainTree.getOutputRecords());
-		return ans.getBytes();
+		return ans;
 	}
 
 	private static String getRecursiveExplainString(ExplainTree et) {
