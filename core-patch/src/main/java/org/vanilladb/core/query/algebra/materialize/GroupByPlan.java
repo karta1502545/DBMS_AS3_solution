@@ -336,8 +336,12 @@ public class GroupByPlan extends ReduceRecordsPlan {
 	 */
 	@Override
 	public ExplainTree explainTree() {
-		// TODO
-		return null;
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+		ExplainTree child = sp.explainTree();
+		et.addChild(child);
+		return et;
 	}
 
 	@Override

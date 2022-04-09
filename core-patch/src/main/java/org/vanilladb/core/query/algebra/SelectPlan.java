@@ -380,8 +380,13 @@ public class SelectPlan extends ReduceRecordsPlan {
 	 */
 	@Override
 	public ExplainTree explainTree() {
-		// TODO
-		return null;
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		String desc = "pred:(" + pred.toString() + ")";
+		ExplainTree et = new ExplainTree(this.getClass().getName(), desc, blks, recs);
+		ExplainTree child = p.explainTree();
+		et.addChild(child);
+		return et;
 	}
 
 	@Override

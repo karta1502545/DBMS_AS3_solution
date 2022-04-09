@@ -142,8 +142,12 @@ public class SortPlan implements Plan {
 	 */
 	@Override
 	public ExplainTree explainTree() {
-		// TODO
-		return null;
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+		ExplainTree child = p.explainTree();
+		et.addChild(child);
+		return et;
 	}
 
 	@Override

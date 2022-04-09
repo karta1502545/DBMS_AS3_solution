@@ -100,8 +100,11 @@ public class TablePlan implements Plan {
 	 */
 	@Override
 	public ExplainTree explainTree() {
-		// TODO
-		return null;
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		String desc = "on (" + ti.tableName() +  ")";
+		ExplainTree et = new ExplainTree(this.getClass().getName(), desc, blks, recs);
+		return et;
 	}
 
 	@Override

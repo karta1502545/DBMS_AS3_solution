@@ -123,7 +123,16 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 	 */
 	@Override
 	public ExplainTree explainTree() {
-		return null;
+        long blks = this.blocksAccessed();
+        long recs = this.recordsOutput();
+        ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+
+        ExplainTree c1 = sp1.explainTree();
+        ExplainTree c2 = sp2.explainTree();
+
+        et.addChild(c1);
+        et.addChild(c2);
+        return et;
 	}
 
 	@Override
