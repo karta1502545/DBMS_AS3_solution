@@ -383,7 +383,7 @@ public class SelectPlan extends ReduceRecordsPlan {
 		long blks = this.blocksAccessed();
 		long recs = this.recordsOutput();
 		String desc = "pred:(" + pred.toString() + ")";
-		ExplainTree et = new ExplainTree(this.getClass().getName(), desc, blks, recs);
+		ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), desc, blks, recs);
 		ExplainTree child = p.explainTree();
 		et.addChild(child);
 		return et;

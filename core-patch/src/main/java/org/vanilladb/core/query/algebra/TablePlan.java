@@ -103,7 +103,7 @@ public class TablePlan implements Plan {
 		long blks = this.blocksAccessed();
 		long recs = this.recordsOutput();
 		String desc = "on (" + ti.tableName() +  ")";
-		ExplainTree et = new ExplainTree(this.getClass().getName(), desc, blks, recs);
+		ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), desc, blks, recs);
 		return et;
 	}
 

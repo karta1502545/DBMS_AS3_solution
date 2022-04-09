@@ -125,7 +125,7 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 	public ExplainTree explainTree() {
         long blks = this.blocksAccessed();
         long recs = this.recordsOutput();
-        ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+        ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), null, blks, recs);
 
         ExplainTree c1 = sp1.explainTree();
         ExplainTree c2 = sp2.explainTree();
