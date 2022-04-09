@@ -187,6 +187,8 @@ public class Lexer {
 		}
 	}
 
+	// TODO: add explain to keywords
+
 	private void initKeywords() {
 		keywords = Arrays.asList("select", "from", "where", "and", "insert",
 				"into", "values", "delete", "drop", "update", "set", "create", "table",
