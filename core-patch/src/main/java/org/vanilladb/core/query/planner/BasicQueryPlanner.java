@@ -40,6 +40,7 @@ public class BasicQueryPlanner implements QueryPlanner {
 	 * and views; it then selects on the predicate; and finally it projects on
 	 * the field list.
 	 */
+	// TODO: check if need to explain
 	@Override
 	public Plan createPlan(QueryData data, Transaction tx) {
 		// Step 1: Create a plan for each mentioned table or view
