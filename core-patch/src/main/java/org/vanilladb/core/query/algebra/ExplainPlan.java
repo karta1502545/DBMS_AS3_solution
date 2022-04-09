@@ -71,7 +71,7 @@ public class ExplainPlan implements Plan {
 	 */
 	@Override
 	public Schema schema() {
-		return p.schema();
+		return this.schema;
 	}
 
 	/**
