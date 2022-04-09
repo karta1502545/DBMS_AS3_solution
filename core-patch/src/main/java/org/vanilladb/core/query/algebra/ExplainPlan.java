@@ -21,6 +21,12 @@ public class ExplainPlan implements Plan {
 	@Override
 	public Scan open() {
 		Scan s = p.open();
+		int actual_recs = 0 ;
+		s.beforeFirst() ;
+		while (s.next()) 
+			actual_recs++ ;
+		s.close() ;
+		explain_msg += "Actual #recs: " + actual_recs + "\n" ;
 		return new ExplainScan(s, explain_msg);
 	}
 	
