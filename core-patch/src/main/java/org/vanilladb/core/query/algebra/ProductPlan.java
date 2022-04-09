@@ -137,8 +137,16 @@ public class ProductPlan implements Plan {
 	 */
 	@Override
 	public ExplainTree explainTree() {
-		// TODO
-		return null;
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		ExplainTree et = new ExplainTree(this.getClass().getName(), null, blks, recs);
+
+		ExplainTree c1 = p1.explainTree();
+		ExplainTree c2 = p2.explainTree();
+
+		et.addChild(c1);
+		et.addChild(c2);
+		return et;
 	}
 
 	/**
