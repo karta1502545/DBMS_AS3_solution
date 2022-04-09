@@ -226,6 +226,9 @@ public class Parser {
 	/*
 	 * Methods for parsing queries.
 	 */
+
+	// TODO: add explain to queryCommand
+	// TODO: fix QueryData
 	public QueryData queryCommand() {
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
