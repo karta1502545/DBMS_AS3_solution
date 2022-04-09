@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.vanilladb.bench.server.StartUp" />
     <module name="bench" />
-    <option name="PROGRAM_PARAMETERS" value="BenchDB" />
+    <option name="PROGRAM_PARAMETERS" value="AS3" />
     <option name="VM_PARAMETERS" value="-Djava.util.logging.config.file=target/classes/java/util/logging/logging.properties -Dorg.vanilladb.bench.config.file=target/classes/org/vanilladb/bench/vanillabench.properties -Dorg.vanilladb.core.config.file=target/classes/org/vanilladb/core/vanilladb.properties" />
     <method v="2">
       <option name="Make" enabled="true" />

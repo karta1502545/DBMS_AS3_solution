@@ -4,7 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="org.vanilladb.core.server.StartUp" />
     <module name="core-patch" />
-    <option name="PROGRAM_PARAMETERS" value="student-db" />
+    <option name="PROGRAM_PARAMETERS" value="AS3" />
     <option name="VM_PARAMETERS" value="-Djava.util.logging.config.file=target/classes/java/util/logging/logging.properties -Dorg.vanilladb.core.config.file=target/classes/org/vanilladb/core/vanilladb.properties" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../core-patch" />
     <method v="2">
