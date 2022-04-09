@@ -55,6 +55,15 @@ public interface Plan {
 	 */
 	Histogram histogram();
 
+
+	/**
+	 * Returns the explain tree data with the estimated number of
+	 * blocks and records for each plan.
+	 *
+	 * @return the explain tree
+	 */
+	ExplainTree explainTree();
+
 	/**
 	 * Returns an estimate of the number of records in the query's output table.
 	 * 
