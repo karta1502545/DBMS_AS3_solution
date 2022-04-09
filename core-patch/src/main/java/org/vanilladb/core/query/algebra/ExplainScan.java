@@ -95,7 +95,7 @@ public class ExplainScan implements Scan {
 		String ans = String.format(
 				"-> %s %s (#blks=%d, #recs=%d)\n",
 				et.getPlanType(),
-				et.getDetails(),
+				et.getDetails() == null ? "" : et.getDetails(),
 				et.getBlocksAccessed(),
 				et.getOutputRecords()
 		);
