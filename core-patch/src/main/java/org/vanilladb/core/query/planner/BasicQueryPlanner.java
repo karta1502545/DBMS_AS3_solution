@@ -19,11 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-import org.vanilladb.core.query.algebra.Plan;
-import org.vanilladb.core.query.algebra.ProductPlan;
-import org.vanilladb.core.query.algebra.ProjectPlan;
-import org.vanilladb.core.query.algebra.SelectPlan;
-import org.vanilladb.core.query.algebra.TablePlan;
+import org.vanilladb.core.query.algebra.*;
 import org.vanilladb.core.query.algebra.materialize.GroupByPlan;
 import org.vanilladb.core.query.algebra.materialize.SortPlan;
 import org.vanilladb.core.query.parse.QueryData;
@@ -66,6 +62,9 @@ public class BasicQueryPlanner implements QueryPlanner {
 		// Step 6: Add a sort plan if specified
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
+		// Step 7: Add explain plan if specified
+		if (data.explainBool() == true)
+			p = new ExplainPlan(p);
 
 		return p;
 	}
