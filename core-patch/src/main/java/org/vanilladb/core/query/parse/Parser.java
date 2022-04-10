@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
+//AS3: Sheep Modified
 package org.vanilladb.core.query.parse;
 
 import static org.vanilladb.core.sql.RecordComparator.DIR_ASC;
@@ -227,6 +228,11 @@ public class Parser {
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
+		Boolean isExplain = false; // add keyword "explain"
+		if (lex.matchKeyword("explain")) {
+			lex.eatKeyword("explain");
+			isExplain = true;
+		}
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
 		lex.eatKeyword("from");
@@ -260,7 +266,7 @@ public class Parser {
 			sortDirs = sortList.directionList();
 		}
 		return new QueryData(projs.asStringSet(), tables, pred,
-				groupFields, projs.aggregationFns(), sortFields, sortDirs);
+				groupFields, projs.aggregationFns(), sortFields, sortDirs, isExplain); // add the new flag for ExplainPlan
 	}
 
 	/*
