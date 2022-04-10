@@ -51,15 +51,17 @@ public class ExplainScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) {
 		
-		return fldName == "query-plan";
+		return fldName.equals("query-plan");
 	}
 	
 	@Override
 	public Constant getVal(String fldName)
 	{
-		if(fldName == "query-plan")
+		if(fldName.equals("query-plan")) {
 			return new VarcharConstant(explainRecord);
+		}
 		else
+//			throw new RuntimeException("field " + fldName + " not found.");
 			return new VarcharConstant("no " + fldName);
 	}
 }

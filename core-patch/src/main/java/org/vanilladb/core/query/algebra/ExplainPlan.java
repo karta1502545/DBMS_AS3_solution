@@ -10,7 +10,6 @@ public class ExplainPlan implements Plan{
 	private Schema schema = new Schema();
 	
 	
-	
 	public ExplainPlan(Plan p){
 		schema.addField("query-plan", Type.VARCHAR(500));
 		this.p = p;

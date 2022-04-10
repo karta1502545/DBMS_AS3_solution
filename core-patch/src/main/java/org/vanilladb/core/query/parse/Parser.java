@@ -228,7 +228,7 @@ public class Parser {
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
-		boolean isExplained =false;
+		boolean isExplained = false;
 		if(lex.matchKeyword("explain")){
 			lex.eatKeyword("explain");
 			isExplained = true;
