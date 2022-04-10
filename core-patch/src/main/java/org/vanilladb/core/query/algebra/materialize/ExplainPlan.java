@@ -60,8 +60,8 @@ public class ExplainPlan implements Plan {
 	@Override
 	public Scan open() {
 		Scan src = p.open();
-		schema.addField("query-plan", Type.VARCHAR(500));
 		// System.out.format("%s", schema.fields());
+		schema.addField("query-plan", Type.VARCHAR(500));
 		return new ExplainScan(src, schema.fields(), toString());
 	}
 
@@ -125,6 +125,7 @@ public class ExplainPlan implements Plan {
 		while(s.next()){
 			cnt++;
 		}
+		s.close();
 		// sb.append("Actual #recs: " + recordsOutput());
 		sb.append("Actual #recs: " + cnt);
 		return sb.toString();
