@@ -26,7 +26,7 @@ public class ExplainPlan implements Plan {
 		while (s.next())
 			actual_recs++;
 		s.close();
-		explain_msg += "Actual #recs: " + actual_recs + "\n";
+		explain_msg += "Actual #recs: " + actual_recs;
 		return new ExplainScan(s, explain_msg);
 	}
 

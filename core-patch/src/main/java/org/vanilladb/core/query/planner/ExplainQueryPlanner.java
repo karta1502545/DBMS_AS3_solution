@@ -62,7 +62,7 @@ public class ExplainQueryPlanner implements QueryPlanner {
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 
-		if (data.isExplain())
+		if (data.isExplainQuery())
 			p = new ExplainPlan(p);
 
 		return p;
