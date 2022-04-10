@@ -227,11 +227,10 @@ public class Parser {
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
-		boolean isExplain = false ;
+		boolean isExplain = false;
 		if (lex.matchKeyword("explain")) {
 			lex.eatKeyword("explain");
-			isExplain = true ;
-			
+			isExplain = true;
 		}
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();

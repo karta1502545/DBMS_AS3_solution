@@ -141,17 +141,14 @@ public class ProductPlan implements Plan {
 
 	@Override
 	public String toString() {
-		String c1 = p1.toString();
-		String c2 = p2.toString();
-		String[] cs1 = c1.split("\n");
-		String[] cs2 = c2.split("\n");
+		String c = p1.toString() + p2.toString();
+		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");
-		sb.append("ProductPlan: (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
-		for (String child : cs1)
-			sb.append("\t").append(child).append("\n");
-		for (String child : cs2)
+		sb.append(this.getClass().getSimpleName() +
+				" (#blks=" + blocksAccessed() +
+				", #recs=" + recordsOutput() + ")\n");
+		for (String child : cs)
 			sb.append("\t").append(child).append("\n");
 		return sb.toString();
 	}

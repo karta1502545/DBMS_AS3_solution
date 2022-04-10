@@ -5,27 +5,27 @@ import org.vanilladb.core.sql.VarcharConstant;
 
 public class ExplainScan implements Scan {
 	private Scan s;
-	private Constant explain_msg ;
+	private Constant explain_msg;
 	private boolean before_first;
 	
 	public ExplainScan(Scan s, String explain_msg) {
 		this.s = s;
-		this.explain_msg = new VarcharConstant(explain_msg) ;
+		this.explain_msg = new VarcharConstant(explain_msg);
 	}
 
 	@Override
 	public void beforeFirst() {
 		s.beforeFirst();
-		before_first = true ;
+		before_first = true;
 	}
 
 	@Override
 	public boolean next() {
 		if (before_first) {
-			before_first = false ;
-			return true ;
+			before_first = false;
+			return true;
 		}
-		return false ;
+		return false;
 	}
 
 	@Override
@@ -36,14 +36,13 @@ public class ExplainScan implements Scan {
 	@Override
 	public Constant getVal(String fldName) {
 		if (hasField(fldName)) {
-			return explain_msg ;
-		}
-		else
+			return explain_msg;
+		} else
 			throw new RuntimeException("field " + fldName + " not found in explain.");
 	}
 
 	@Override
 	public boolean hasField(String fldName) {
-		return fldName.equals("query-plan") ;
+		return fldName.equals("query-plan");
 	}
 }

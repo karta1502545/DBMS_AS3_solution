@@ -101,8 +101,10 @@ public class TablePlan implements Plan {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");
-		sb.append("TablePlan on ("+ ti.tableName() + "): (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
+		sb.append(this.getClass().getSimpleName() +
+				" on (" + ti.tableName() + ")" +
+				" (#blks=" + blocksAccessed() +
+				", #recs=" + recordsOutput() + ")\n");
 		return sb.toString();
 	}
 }

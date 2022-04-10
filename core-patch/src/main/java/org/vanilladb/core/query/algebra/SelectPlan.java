@@ -383,11 +383,12 @@ public class SelectPlan extends ReduceRecordsPlan {
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");
-		sb.append("SelectPlan pred:(" + pred.toString() + ") (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
+		sb.append(this.getClass().getSimpleName() +
+				" pred:(" + pred.toString() + ")" +
+				" (#blks=" + blocksAccessed() +
+				", #recs=" + recordsOutput() + ")\n");
 		for (String child : cs)
 			sb.append("\t").append(child).append("\n");
-		;
 		return sb.toString();
 	}
 }
