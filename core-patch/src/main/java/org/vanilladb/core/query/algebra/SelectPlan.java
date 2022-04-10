@@ -377,5 +377,14 @@ public class SelectPlan extends ReduceRecordsPlan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String explainOutput(int d){
+		String explain = "";
+		for (int i = 0; i < d; i++)
+			explain += "\t";
+		explain += String.format("->SelectPlan pred:(%s) (#blks=%d, #recs=%d)\n", pred.toString(), blocksAccessed(), recordsOutput());
+		return explain + p.explainOutput(d + 1);
+	}
+
 
 }

@@ -120,4 +120,9 @@ public class MaterializePlan implements Plan {
 		;
 		return sb.toString();
 	}
+	
+	@Override
+	public String explainOutput(int d){
+		return p.explainOutput(d);
+	}
 }
