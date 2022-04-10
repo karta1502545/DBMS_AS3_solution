@@ -58,6 +58,11 @@ import org.vanilladb.core.sql.predicate.Term;
 import org.vanilladb.core.storage.index.IndexType;
 import org.vanilladb.core.util.CoreProperties;
 
+/*
+ * test.
+ */
+
+
 /**
  * The VanillaDb parser. Note that VanillaDb parser cannot parse double value in
  * scientific notation.
