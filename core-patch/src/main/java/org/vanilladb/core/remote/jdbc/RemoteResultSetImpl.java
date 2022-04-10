@@ -33,7 +33,6 @@ import org.vanilladb.core.sql.Schema;
 @SuppressWarnings("serial")
 class RemoteResultSetImpl extends UnicastRemoteObject implements
 		RemoteResultSet {
-	private Plan p;
 	private Scan s;
 	private Schema schema;
 	private RemoteConnectionImpl rconn;
@@ -50,7 +49,6 @@ class RemoteResultSetImpl extends UnicastRemoteObject implements
 	 */
 	public RemoteResultSetImpl(Plan plan, RemoteConnectionImpl rconn)
 			throws RemoteException {
-		p = plan;
 		s = plan.open();
 		schema = plan.schema();
 		this.rconn = rconn;
