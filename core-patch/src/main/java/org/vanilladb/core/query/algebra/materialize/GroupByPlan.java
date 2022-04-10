@@ -243,7 +243,6 @@ public class GroupByPlan extends ReduceRecordsPlan {
 	private Set<AggregationFn> aggFns;
 	private Schema schema;
 	private Histogram hist;
-	private String sortInfoInGroup;
 
 	/**
 	 * Creates a group-by plan for the underlying query. The grouping is
@@ -270,7 +269,6 @@ public class GroupByPlan extends ReduceRecordsPlan {
 				schema.add(fld, p.schema());
 			// sort records by group-by fields with default direction
 			sp = new SortPlan(p, new ArrayList<String>(groupFlds), tx);
-			sortInfoInGroup = "->SortPlan (#blks="+String.valueOf(sp.blocksAccessed())+", #recs="+String.valueOf(sp.recordsOutput())+")\n";
 		} else
 			// all records are in a single group, so p is already sorted
 			sp = p;
@@ -282,11 +280,6 @@ public class GroupByPlan extends ReduceRecordsPlan {
 				schema.addField(fn.fieldName(), t);
 			}
 		hist = groupByHistogram(p.histogram(), this.groupFlds, aggFns);
-	}
-
-	@Override
-	public String sortInfoInGroup() {
-		return sortInfoInGroup;
 	}
 
 	/**
@@ -340,7 +333,7 @@ public class GroupByPlan extends ReduceRecordsPlan {
 		return (long) hist.recordsOutput();
 	}
 
-	@Override
+	@Override //add
 	public String toString() {
 		String c = sp.toString();
 		String[] cs = c.split("\n");

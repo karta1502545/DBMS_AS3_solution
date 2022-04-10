@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
+//AS3: Sheep Modified
 package org.vanilladb.core.query.algebra;
 
 import java.util.HashSet;
@@ -139,5 +140,22 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override //add
+	public String toString() {
+		String c = p1.toString(); 
+		String[] cs = c.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("ProductPlan: (#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		for (String child : cs)
+			sb.append("\t").append(child).append("\n");
 
+		c = p2.toString(); 
+		cs = c.split("\n");
+		for (String child : cs)
+			sb.append("\t").append(child).append("\n");
+
+		return sb.toString();
+	}
 }

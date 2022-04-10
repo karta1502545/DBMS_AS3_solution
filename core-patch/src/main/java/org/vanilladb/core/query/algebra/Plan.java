@@ -62,11 +62,4 @@ public interface Plan {
 	 * @return the estimated number of output records
 	 */
 	long recordsOutput();
-
-	/**
-	 * Add for SortPlan in GroupPlan
-	 * 
-	 * @return the string of sortInfoInGroup
-	 */
-	String sortInfoInGroup();
 }

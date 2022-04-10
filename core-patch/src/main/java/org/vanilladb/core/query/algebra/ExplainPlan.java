@@ -37,23 +37,21 @@ public class ExplainPlan implements Plan {
 		return hist1;
 	}
 
-	private Plan p1;
+	private Plan p;
 	private Schema schema = new Schema();
 	private Histogram hist;
-	private String info;
 
 	/**
 	 * Creates a new product node in the query tree, having the two specified
 	 * subqueries.
 	 * 
-	 * @param p1
+	 * @param p
 	 *            the left-hand subquery
 	 */
-	public ExplainPlan(Plan p1, String info) {
-		this.p1 = p1;
-		schema.addField("query-plan", VARCHAR);	
-		this.info = info;
-		hist = productHistogram(p1.histogram());
+	public ExplainPlan(Plan p) {
+		this.p = p;
+		schema.addField("query-plan", VARCHAR);
+		hist = productHistogram(p.histogram());
 	}
 
 	/**
@@ -63,7 +61,7 @@ public class ExplainPlan implements Plan {
 	 */
 	@Override
 	public Scan open() {
-		return new ExplainScan(this.info);
+		return new ExplainScan(this.toString());
 	}
 
 	/**
@@ -77,7 +75,7 @@ public class ExplainPlan implements Plan {
 	 */
 	@Override
 	public long blocksAccessed() {
-		return p1.blocksAccessed();
+		return p.blocksAccessed();
 	}
 
 	/**
@@ -112,5 +110,15 @@ public class ExplainPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	@Override
+	public String toString() {
+		String c = p.toString();
+		String[] cs = c.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("-----------------------------------------------------------\n");
+		for (String child : cs)
+			sb.append(child).append("\n");
+		sb.append("Actual #recs: " + String.valueOf(recordsOutput()));
+		return sb.toString();
+	}
 }
