@@ -4,6 +4,26 @@ Team 8: 107060025 王子文、107062312 郭濬睿
 
 ## Implementation
 
+### Parser and Lexer
+
+First, add "explain" as a keyword in Lexer, and when Parser read input query, determine whether there's an "explain" keyword.
+
+### QueryData
+
+Add a private variable "isExplain" to store if this query data is an "explain" query.
+
+### BasicQueryPlanner
+
+In query planner, check if input query data is an "explain" query. If yes, wrap current plan in an "explain plan".
+
+### ExplainPlan/ExplainScan and other Plans
+
+We create two new classes to deal with "explain" query. 
+
+In ExplainPlan, we take a lower level plan as input, construct a schema that only contains a "query-plan" field, then prepare the desired output message. The way we generate this message is, we add a method "toString" in other type of plans, this method will return a string that contain the message of that plan. By calling "toString" recursively, we can have the entire message in ExplainPlan. Also, to get the number of records actually accessed, we open the plan to get a scan, then use a while loop to count the number of times that next() can be called in this scan.
+
+When calling plan.open(), ExplainPlan will pass the prepared message into a new ExplainScan and return it. In ExplainScan, when calling getVal(), it will check if the field is "query-plan" and return the prepared message. Since it should contain only one record, we use a boolean variable(*BV*) in ExplainScan to check: when beforeFirst() is called, set *BV* to true; when next() is called, if *BV* is true, set *BV* to false and return true, otherwise return false.
+
 ## Experiment
 * A query accessing single table with WHERE
   ```sql
