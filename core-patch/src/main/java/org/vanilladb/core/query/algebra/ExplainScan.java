@@ -3,42 +3,33 @@ package org.vanilladb.core.query.algebra;
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.VarcharConstant;
-import org.vanilladb.core.storage.metadata.TableInfo;
-import org.vanilladb.core.storage.record.RecordFile;
-import org.vanilladb.core.storage.record.RecordId;
-import org.vanilladb.core.storage.tx.Transaction;
-import org.vanilladb.core.sql.Type;
 
-public class ExplainScan implements Scan{
-	//explain will not output record file
-	private RecordFile rf;
+public class ExplainScan implements Scan {
 	private String result;
+	private int numRecs = 0;
+	private boolean IsbeforeFirst = true;
 	private Schema schema;
-	private Scan s;
-	private int numRecs;
-	private String explain;
-	private boolean IsbeforeFirst;
 	
-	
-	public ExplainScan(Scan s,long blks,Schema schema,String p) {
-		//this.s=p.open();
-		this.explain=p.toString();
+	public ExplainScan(Plan p, Scan s, Schema schema) {
+		this.schema = schema;
+		result = p.toString();
+		
 		s.beforeFirst();
 		while (s.next())
 			numRecs++;
 		s.close();
-		this.result = result + "\nActual #recs: " + numRecs;
-		IsbeforeFirst = true;
+		this.result = result + "Actual #recs: " + numRecs;
 	}
+	
 	@Override
 	public void beforeFirst() {
-		IsbeforeFirst=true;
+		IsbeforeFirst = true;
 	}
 
 	@Override
 	public boolean next() {
 		if (IsbeforeFirst) {
-			IsbeforeFirst=!IsbeforeFirst;
+			IsbeforeFirst = !IsbeforeFirst;
 			return true;
 		} else {
 			return false;
@@ -48,7 +39,7 @@ public class ExplainScan implements Scan{
 
 	@Override
 	public void close() {
-		//rf.close();
+		// nothing to do
 	}
 
 	/**
@@ -58,7 +49,6 @@ public class ExplainScan implements Scan{
 	 */
 	@Override
 	public Constant getVal(String fldName) {
-		//return rf.getVal(fldName);
 		if(fldName.equals("query-plan"))
 			return new VarcharConstant(result);
 		else
@@ -67,6 +57,6 @@ public class ExplainScan implements Scan{
 
 	@Override
 	public boolean hasField(String fldName) {
-		return schema.hasField(fldName);
+		return this.schema.hasField(fldName);
 	}
 }

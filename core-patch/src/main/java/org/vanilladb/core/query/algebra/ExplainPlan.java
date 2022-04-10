@@ -7,59 +7,51 @@ import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 public class ExplainPlan implements Plan{
 	private Plan p;
+	private Schema schema = new Schema();
 
 	/**
-	 * Creates a leaf node in the query tree corresponding to the specified
-	 * table.
+	 * Creates a explain node in the query tree according to the subquery
 	 * 
-	 * @param tblName
-	 *            the name of the table
-	 * @param tx
-	 *            the calling transaction
+	 * @param p
+	 *            the subquery
 	 */
 	public ExplainPlan(Plan p) {
 		this.p=p;
+		schema.addField("query-plan", Type.VARCHAR(500));
 	}
 
 	/**
-	 * Creates a table scan for this query.
+	 * Creates a explain scan for this query.
 	 * 
 	 * @see Plan#open()
 	 */
 	@Override
 	public Scan open() {
-		return new ExplainScan(p.open(),p.blocksAccessed(), schema(), p.toString());
-		//return new SortScan(runs, comp);
-		//return new ExplainScan(ti, tx);
+		return new ExplainScan(p, p.open(), schema);
 	}
 
 	/**
-	 * Estimates the number of block accesses for the table, which is obtainable
-	 * from the statistics manager.
+	 * blocksAccessed should be 0
 	 * 
 	 * @see Plan#blocksAccessed()
 	 */
 	@Override
 	public long blocksAccessed() {
-		return p.blocksAccessed();
+		return 0;
 	}
 
 	/**
-	 * Determines the schema of the table, which is obtainable from the catalog
-	 * manager.
+	 * the schema contains only one column, which is query-plan
 	 * 
 	 * @see Plan#schema()
 	 */
 	@Override
 	public Schema schema() {
-		Schema schema= new Schema();
-		schema.addField("query-plan", Type.VARCHAR(500));
 		return schema;
 	}
 
 	/**
-	 * Returns the histogram that approximates the join distribution of the
-	 * field values of query results.
+	 * Returns the histogram
 	 * 
 	 * @see Plan#histogram()
 	 */
@@ -70,7 +62,6 @@ public class ExplainPlan implements Plan{
 
 	@Override
 	public long recordsOutput() {
-		//return (long) histogram().recordsOutput();
 		return 1;
 	}
 

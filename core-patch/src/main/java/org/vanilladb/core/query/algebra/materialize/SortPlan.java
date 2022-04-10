@@ -304,11 +304,16 @@ public class SortPlan implements Plan {
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");
-		sb.append("SortPlan (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
+		sb.append("SortPlan sort by:(");
+		for (int i = 0; i < sortFlds.size(); i++) {
+			sb.append(sortFlds.get(i) + " ");
+			sb.append(sortDirs.get(i) ==  DIR_ASC ? "ASC" : "DESC");
+			if (i < sortFlds.size()-1)
+				sb.append(", ");
+		}
+		sb.append(") (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
 		for (String child : cs)
 			sb.append("\t").append(child).append("\n");
-		;
 		return sb.toString();
 	}
 }

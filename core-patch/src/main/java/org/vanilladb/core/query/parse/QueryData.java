@@ -58,7 +58,7 @@ public class QueryData {
 	 */
 	public QueryData(boolean explain,Set<String> projFields, Set<String> tables, Predicate pred,
 			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
-		this.explain=explain;
+		this.explain = explain;
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -132,7 +132,7 @@ public class QueryData {
 	public Set<AggregationFn> aggregationFn() {
 		return aggFn;
 	}
-	public boolean isexplain() {
+	public boolean isExplain() {
 		return explain;
 	}
 

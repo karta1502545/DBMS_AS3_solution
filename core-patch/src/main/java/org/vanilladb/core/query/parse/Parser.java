@@ -268,7 +268,7 @@ public class Parser {
 			sortFields = sortList.fieldList();
 			sortDirs = sortList.directionList();
 		}
-		return new QueryData(explain,projs.asStringSet(), tables, pred,
+		return new QueryData(explain, projs.asStringSet(), tables, pred,
 				groupFields, projs.aggregationFns(), sortFields, sortDirs);
 	}
 
