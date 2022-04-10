@@ -311,4 +311,24 @@ public class SortPlan implements Plan {
 		;
 		return sb.toString();
 	}
+	
+	
+	@Override
+	public String recordData()
+	{
+		String subQuery = p.recordData();
+		
+		String r = "->SortPlan  (#blks=" + blocksAccessed();
+		r += ", #recs ="+recordsOutput() + ")\n";
+		
+		String tmp[] = subQuery.split("\n");
+		for(String s : tmp)
+		{
+			r += "   ";
+			r += s;
+			r += "\n";
+		}
+		
+		return r;
+	}
 }

@@ -42,6 +42,7 @@ public class ConsoleSQLInterpreter {
 			while (true) {
 				// process one line of input
 				System.out.print("\nSQL> ");
+				
 				String cmd = br.readLine().trim();
 				System.out.println();
 

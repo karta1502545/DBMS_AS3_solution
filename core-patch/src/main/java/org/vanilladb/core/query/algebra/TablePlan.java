@@ -30,6 +30,7 @@ public class TablePlan implements Plan {
 	private Transaction tx;
 	private TableInfo ti;
 	private TableStatInfo si;
+	private String tableName;
 
 	/**
 	 * Creates a leaf node in the query tree corresponding to the specified
@@ -42,6 +43,7 @@ public class TablePlan implements Plan {
 	 */
 	public TablePlan(String tblName, Transaction tx) {
 		this.tx = tx;
+		tableName = tblName;
 		ti = VanillaDb.catalogMgr().getTableInfo(tblName, tx);
 		if (ti == null)
 			throw new TableNotFoundException("table '" + tblName
@@ -96,6 +98,15 @@ public class TablePlan implements Plan {
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
 	}
-
-
+	
+	@Override
+	public String recordData()
+	{
+		String r = "->TablePlan on(" + tableName + ")";
+		r += "(#blks=" + blocksAccessed();
+		r += ", #recs ="+recordsOutput() + ")\n";
+		
+		
+		return r;
+	}
 }

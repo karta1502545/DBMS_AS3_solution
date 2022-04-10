@@ -7,22 +7,19 @@ import org.vanilladb.core.storage.tx.Transaction;
 
 public class ExplainPlan implements Plan{
 	private Plan p;
-	private Transaction tx;
-	private Histogram hist;
 	private Schema schema = new Schema();
 	
 	
 	
-	public ExplainPlan(Plan p, Transaction tx){
+	public ExplainPlan(Plan p){
+		schema.addField("query-plan", Type.VARCHAR(500));
 		this.p = p;
-		this.tx =tx;
-		
 	}
 	
 	@Override
 	public Scan open() {
 		Scan s = p.open();
-		return new ExplainScan(s, schema, p.toString());
+		return new ExplainScan(s, schema, p.recordData());
 	}
 	
 	@Override
@@ -33,13 +30,12 @@ public class ExplainPlan implements Plan{
 	
 	@Override
 	public Schema schema() {
-		schema.addField("query-plan", Type.VARCHAR(500));
 		return schema;
 	}
 	
 	@Override
 	public Histogram histogram() {
-		return hist;
+		return p.histogram();
 	}
 	
 	@Override
@@ -47,4 +43,12 @@ public class ExplainPlan implements Plan{
 		
 		return (long)histogram().recordsOutput();
 	}
+	
+	@Override
+	public String recordData()
+	{
+		return p.recordData();
+	}
+		
+	
 }
