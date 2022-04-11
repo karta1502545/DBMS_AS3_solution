@@ -16,13 +16,14 @@ public class ExplainScan implements Scan {
 		this.s = s;
 		this.schema = sche;
 		int total = 0;
-		explainRecord = "\n" + exp;
+		explainRecord = "\n";
+		explainRecord += exp;
 		s.beforeFirst();
 		while(s.next())
 			total++;
 		s.close();
 		
-		explainRecord += "\n" + "Actual #recs: " + total;
+		explainRecord += "Actual #recs: " + total;
 	}
 	
 	@Override
@@ -61,7 +62,7 @@ public class ExplainScan implements Scan {
 			return new VarcharConstant(explainRecord);
 		}
 		else
-//			throw new RuntimeException("field " + fldName + " not found.");
 			return new VarcharConstant("no " + fldName);
+//			throw new RuntimeException("field " + fldName + " not found.");
 	}
 }
