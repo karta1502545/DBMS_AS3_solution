@@ -352,7 +352,7 @@ public class GroupByPlan extends ReduceRecordsPlan {
 		String subQuery = sp.recordData();
 		
 		String r = "->GroupByPlan  (#blks=" + blocksAccessed();
-		r += ", #recs ="+recordsOutput() + ")\n";
+		r += ", #recs="+recordsOutput() + ")\n";
 		
 		String tmp[] = subQuery.split("\n");
 		for(String s : tmp)

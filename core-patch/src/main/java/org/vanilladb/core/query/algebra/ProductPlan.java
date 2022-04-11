@@ -148,7 +148,7 @@ public class ProductPlan implements Plan {
 		
 		
 		String r = "->ProductPlan  (#blks=" + blocksAccessed();
-		r += ", #recs ="+recordsOutput() + ")\n";
+		r += ", #recs="+recordsOutput() + ")\n";
 		
 		String tmpLeft[] = subQueryLeft.split("\n");
 		for(String s : tmpLeft)

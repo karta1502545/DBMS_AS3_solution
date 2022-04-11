@@ -319,7 +319,7 @@ public class SortPlan implements Plan {
 		String subQuery = p.recordData();
 		
 		String r = "->SortPlan  (#blks=" + blocksAccessed();
-		r += ", #recs ="+recordsOutput() + ")\n";
+		r += ", #recs="+recordsOutput() + ")\n";
 		
 		String tmp[] = subQuery.split("\n");
 		for(String s : tmp)
