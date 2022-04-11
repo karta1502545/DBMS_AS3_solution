@@ -18,7 +18,7 @@ public class ExplainPlan implements Plan{
 	@Override
 	public Scan open() {
 		Scan s = p.open();
-		return new ExplainScan(s, schema, p.recordData());
+		return new ExplainScan(s, schema, recordData());
 	}
 	
 	@Override

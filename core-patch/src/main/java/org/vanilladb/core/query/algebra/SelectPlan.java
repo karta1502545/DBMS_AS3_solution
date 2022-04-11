@@ -384,7 +384,7 @@ public class SelectPlan extends ReduceRecordsPlan {
 		
 		String r = "->SelectPlan  pred:("+ pred.toString();
 		r += "(#blks=" + blocksAccessed();
-		r += ", #recs =" + recordsOutput() + ")\n";
+		r += ", #recs=" + recordsOutput() + ")\n";
 		
 		String tmp[] = subQuery.split("\n");
 		for(String s : tmp)

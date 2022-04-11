@@ -148,7 +148,7 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 		String subQueryRight = sp2.recordData();
 		
 		String r = "->MergeJoinPlan  (#blks=" + blocksAccessed();
-		r += ", #recs ="+recordsOutput() + ")\n";
+		r += ", #recs="+recordsOutput() + ")\n";
 		
 		String tmpLeft[] = subQueryLeft.split("\n");
 		for(String s : tmpLeft)

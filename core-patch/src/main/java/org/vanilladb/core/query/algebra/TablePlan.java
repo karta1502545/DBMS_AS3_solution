@@ -104,7 +104,7 @@ public class TablePlan implements Plan {
 	{
 		String r = "->TablePlan on(" + tableName + ")";
 		r += "(#blks=" + blocksAccessed();
-		r += ", #recs ="+recordsOutput() + ")\n";
+		r += ", #recs="+recordsOutput() + ")\n";
 		
 		
 		return r;

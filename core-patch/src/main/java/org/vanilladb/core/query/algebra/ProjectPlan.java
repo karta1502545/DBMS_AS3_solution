@@ -119,7 +119,7 @@ public class ProjectPlan implements Plan {
 		String subQuery = p.recordData();
 		
 		String r = "->ProjectPlan  (#blks=" + blocksAccessed();
-		r += ", #recs ="+recordsOutput() + ")\n";
+		r += ", #recs="+recordsOutput() + ")\n";
 		
 		String tmp[] = subQuery.split("\n");
 		for(String s : tmp)

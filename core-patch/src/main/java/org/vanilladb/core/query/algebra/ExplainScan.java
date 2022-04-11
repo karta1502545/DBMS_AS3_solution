@@ -15,15 +15,20 @@ public class ExplainScan implements Scan {
 	{
 		this.s = s;
 		this.schema = sche;
+		explainRecord = "\n" + exp + "Actual #recs: " + actualRun();
+		
+	}
+	
+	private int actualRun()
+	{
 		int total = 0;
-		explainRecord = "\n";
-		explainRecord += exp;
+		
 		s.beforeFirst();
 		while(s.next())
 			total++;
 		s.close();
 		
-		explainRecord += "Actual #recs: " + total;
+		return total;
 	}
 	
 	@Override
