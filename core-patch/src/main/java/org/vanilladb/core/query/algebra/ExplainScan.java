@@ -2,6 +2,7 @@ package org.vanilladb.core.query.algebra;
 
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.Type;
+import org.vanilladb.core.sql.VarcharConstant;
 
 public class ExplainScan implements Scan {
 	private Scan s;
@@ -25,7 +26,7 @@ public class ExplainScan implements Scan {
 	@Override
 	public Constant getVal(String fldName) {
 		if(hasField(fldName))
-			return Constant.newInstance(Type.VARCHAR(500), queryData.getBytes());
+			return new VarcharConstant(queryData, Type.VARCHAR(500));
 		else 
 			throw new RuntimeException("field " + fldName + " not found.");
 	}
