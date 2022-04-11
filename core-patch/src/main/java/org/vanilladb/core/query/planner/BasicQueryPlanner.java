@@ -24,6 +24,7 @@ import org.vanilladb.core.query.algebra.ProductPlan;
 import org.vanilladb.core.query.algebra.ProjectPlan;
 import org.vanilladb.core.query.algebra.SelectPlan;
 import org.vanilladb.core.query.algebra.TablePlan;
+import org.vanilladb.core.query.algebra.explainplan;
 import org.vanilladb.core.query.algebra.materialize.GroupByPlan;
 import org.vanilladb.core.query.algebra.materialize.SortPlan;
 import org.vanilladb.core.query.parse.QueryData;
@@ -55,18 +56,24 @@ public class BasicQueryPlanner implements QueryPlanner {
 		Plan p = plans.remove(0);
 		for (Plan nextplan : plans)
 			p = new ProductPlan(p, nextplan);
+		
 		// Step 3: Add a selection plan for the predicate
 		p = new SelectPlan(p, data.pred());
 		// Step 4: Add a group-by plan if specified
 		if (data.groupFields() != null) {
 			p = new GroupByPlan(p, data.groupFields(), data.aggregationFn(), tx);
 		}
+
 		// Step 5: Project onto the specified fields
 		p = new ProjectPlan(p, data.projectFields());
 		// Step 6: Add a sort plan if specified
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
-
+		
+		if(data.exp()==1) {
+			p=new explainplan(p);
+			//System.out.print(p.toString());
+		}
 		return p;
 	}
 }
