@@ -33,9 +33,6 @@ public class ExplainPlan implements Plan {
 	 * @return a histogram that, for each field, approximates the value
 	 *         distribution of the products
 	 */
-	public static Histogram productHistogram(Histogram hist1) {
-		return hist1;
-	}
 
 	private Plan p;
 	private Schema schema = new Schema();
@@ -51,7 +48,7 @@ public class ExplainPlan implements Plan {
 	public ExplainPlan(Plan p) {
 		this.p = p;
 		schema.addField("query-plan", VARCHAR);
-		hist = productHistogram(p.histogram());
+		hist = p.histogram();
 	}
 
 	/**
