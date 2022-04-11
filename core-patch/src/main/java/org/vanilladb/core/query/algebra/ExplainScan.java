@@ -2,6 +2,8 @@ package org.vanilladb.core.query.algebra;
 
 
 import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.query.parse.BadSyntaxException;
+import org.vanilladb.core.query.planner.BadSemanticException;
 import org.vanilladb.core.sql.*;
 
 public class ExplainScan implements Scan {
@@ -61,7 +63,7 @@ public class ExplainScan implements Scan {
 			return new VarcharConstant(explainRecord);
 		}
 		else
-//			throw new RuntimeException("field " + fldName + " not found.");
-			return new VarcharConstant("no " + fldName);
+//			throw new BadSemanticException("field " + fldName + " not found.");
+			return new VarcharConstant("\n no " + fldName);
 	}
 }
