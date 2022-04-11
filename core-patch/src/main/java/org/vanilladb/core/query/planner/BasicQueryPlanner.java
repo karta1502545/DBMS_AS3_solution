@@ -69,7 +69,7 @@ public class BasicQueryPlanner implements QueryPlanner {
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 
 		if (data.isExplaining()) {
-			// TODO: wrap p with ExplainPlan
+			// wrap p with ExplainPlan
 			p = new ExplainPlan(p);
 		}
 

@@ -44,7 +44,6 @@ public class ExplainScan implements Scan {
     @Override
     public Constant getVal(String fldName) {
         if (hasField(fldName))
-            // FIXME: return appropriate data
             return new VarcharConstant(explain_string);
         else
             throw new RuntimeException("field " + fldName + " not found.");

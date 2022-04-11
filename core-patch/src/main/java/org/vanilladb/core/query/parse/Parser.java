@@ -227,7 +227,7 @@ public class Parser {
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
-		// TODO: match explain
+		// match explain
 		boolean explaining = false;
 		if (lex.matchKeyword("explain")) {
 			lex.eatKeyword("explain");
