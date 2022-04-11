@@ -24,12 +24,16 @@ public class ExplainScan implements Scan {
 
 	@Override
 	public Constant getVal(String fldName) {
-		return Constant.newInstance(Type.VARCHAR(500), queryData.getBytes());
+		if(hasField(fldName))
+			return Constant.newInstance(Type.VARCHAR(500), queryData.getBytes());
+		else 
+			throw new RuntimeException("field " + fldName + " not found.");
 	}
 
 	@Override
 	public void beforeFirst() {
 		s.beforeFirst();
+		queryData = "";
 	}
 
 	@Override
