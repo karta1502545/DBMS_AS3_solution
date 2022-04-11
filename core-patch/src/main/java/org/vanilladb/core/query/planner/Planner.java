@@ -38,12 +38,10 @@ import org.vanilladb.core.storage.tx.Transaction;
 public class Planner {
 	private QueryPlanner qPlanner;
 	private UpdatePlanner uPlanner;
-	private ExplainPlanner ePlanner;
 
-	public Planner(QueryPlanner qPlanner, UpdatePlanner uPlanner, ExplainPlanner ePlanner) {
+	public Planner(QueryPlanner qPlanner, UpdatePlanner uPlanner) {
 		this.qPlanner = qPlanner;
 		this.uPlanner = uPlanner;
-		this.ePlanner = ePlanner;
 	}
 
 	/**
@@ -57,9 +55,9 @@ public class Planner {
 	 */
 	public Plan createExplainPlan(String qry, Transaction tx) {
 		Parser parser = new Parser(qry);
-		ExplainData data = parser.explainCommand();
+		QueryData data = parser.explainCommand();
 		Verifier.verifyExplainData(data, tx);
-		return ePlanner.explainQuery(data, tx);
+		return qPlanner.explainPlan(data, tx);
 	}
 
 	/**
@@ -72,10 +70,14 @@ public class Planner {
 	 * @return the scan corresponding to the query plan
 	 */
 	public Plan createQueryPlan(String qry, Transaction tx) {
-		Parser parser = new Parser(qry);
-		QueryData data = parser.queryCommand();
-		Verifier.verifyQueryData(data, tx);
-		return qPlanner.createPlan(data, tx);
+		if(qry.contains("EXPLAIN")) {
+			return createExplainPlan(qry, tx);
+		} else {
+			Parser parser = new Parser(qry);
+			QueryData data = parser.queryCommand();
+			Verifier.verifyQueryData(data, tx);
+			return qPlanner.createPlan(data, tx);
+		}
 	}
 
 	/**

@@ -15,35 +15,19 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.sql.Type;
+import org.vanilladb.core.storage.metadata.statistics.Bucket;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 /**
- * The {@link Plan} class corresponding to the <em>project</em> relational
+ * The {@link Plan} class corresponding to the <em>explain</em> relational
  * algebra operator.
  */
-public class ProjectPlan implements Plan {
-	/**
-	 * Returns a histogram that approximates the join frequency distribution of
-	 * the projected values from the specified histograms onto the specified
-	 * fields.
-	 * 
-	 * @param hist
-	 *            the input join distribution of field values
-	 * @param fldNames
-	 *            the names of fields to project to
-	 * @return join distribution of projected values
-	 */
-	public static Histogram projectHistogram(Histogram hist,
-			Set<String> fldNames) {
-		Histogram pjtHist = new Histogram(fldNames);
-		for (String fld : fldNames)
-			pjtHist.setBuckets(fld, hist.buckets(fld));
-		return pjtHist;
-	}
-
+public class ExplainPlan implements Plan {
 	private Plan p;
 	private Schema schema = new Schema();
 	private Histogram hist;
@@ -57,11 +41,9 @@ public class ProjectPlan implements Plan {
 	 * @param fldNames
 	 *            the list of fields
 	 */
-	public ProjectPlan(Plan p, Set<String> fldNames) {
+	public ExplainPlan(Plan p) {
 		this.p = p;
-		for (String fldname : fldNames)
-			schema.add(fldname, p.schema());
-		hist = projectHistogram(p.histogram(), fldNames);
+        schema.addField("query-plan", Type.VARCHAR);
 	}
 
 	/**
@@ -72,7 +54,7 @@ public class ProjectPlan implements Plan {
 	@Override
 	public Scan open() {
 		Scan s = p.open();
-		return new ProjectScan(s, schema.fields());
+		return new ExplainScan(s, p.toString(), schema.fields());
 	}
 
 	/**
@@ -112,16 +94,8 @@ public class ProjectPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-	@Override
-	public String toString() {
-		String c = p.toString();
-		String[] cs = c.split("\n");
-		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("ProjectPlan  (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
-		for (String child : cs)
-			sb.append("\t").append(child).append("\n");
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        return p.toString();
+    }
 }

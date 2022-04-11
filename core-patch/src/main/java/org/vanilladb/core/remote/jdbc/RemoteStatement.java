@@ -24,7 +24,6 @@ import java.rmi.RemoteException;
  * instead of SQLExceptions.
  */
 public interface RemoteStatement extends Remote {
-	RemoteResultSet executeExplain(String qry) throws RemoteException;
 
 	RemoteResultSet executeQuery(String qry) throws RemoteException;
 

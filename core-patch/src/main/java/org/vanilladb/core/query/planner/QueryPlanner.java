@@ -34,4 +34,15 @@ public interface QueryPlanner {
 	 * @return a plan for that query
 	 */
 	Plan createPlan(QueryData data, Transaction tx);
+
+	/**
+	 * Explains a plan for the parsed query.
+	 * 
+	 * @param data
+	 *            the parsed representation of the query
+	 * @param tx
+	 *            the calling transaction
+	 * @return a plan for that query
+	 */
+	Plan explainPlan(QueryData data, Transaction tx);
 }

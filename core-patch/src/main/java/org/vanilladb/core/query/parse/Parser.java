@@ -226,7 +226,7 @@ public class Parser {
 	/*
 	 * Methods for parsing explain queries.
 	 */
-	public ExplainData explainCommand() {
+	public QueryData explainCommand() {
 		lex.eatKeyword("explain");
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
@@ -260,7 +260,7 @@ public class Parser {
 			sortFields = sortList.fieldList();
 			sortDirs = sortList.directionList();
 		}
-		return new ExplainData(projs.asStringSet(), tables, pred,
+		return new QueryData(projs.asStringSet(), tables, pred,
 				groupFields, projs.aggregationFns(), sortFields, sortDirs);
 	}
 

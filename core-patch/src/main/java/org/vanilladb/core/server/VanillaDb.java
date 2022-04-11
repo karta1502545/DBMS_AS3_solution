@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 
 import org.vanilladb.core.query.planner.BasicQueryPlanner;
 import org.vanilladb.core.query.planner.BasicUpdatePlanner;
-import org.vanilladb.core.query.planner.BasicExplainPlanner;
 import org.vanilladb.core.query.planner.Planner;
 import org.vanilladb.core.query.planner.ExplainPlanner;
 import org.vanilladb.core.query.planner.QueryPlanner;
@@ -62,7 +61,7 @@ public class VanillaDb {
 	private static Logger logger = Logger.getLogger(VanillaDb.class.getName());
 
 	// Classes
-	private static Class<?> queryPlannerCls, updatePlannerCls, explainPlannerCls;
+	private static Class<?> queryPlannerCls, updatePlannerCls;
 
 	// Managers
 	private static FileMgr fileMgr;
@@ -115,10 +114,6 @@ public class VanillaDb {
 		 * utility class, PropertiesFetcher, for safety reason.
 		 */
 
-		// read classes
-		explainPlannerCls = CoreProperties.getLoader().getPropertyAsClass(
-				VanillaDb.class.getName() + ".EXPLAINPLANNER",
-				BasicExplainPlanner.class, ExplainPlanner.class);
 		queryPlannerCls = CoreProperties.getLoader().getPropertyAsClass(
 				VanillaDb.class.getName() + ".QUERYPLANNER",
 				BasicQueryPlanner.class, QueryPlanner.class);
@@ -290,18 +285,16 @@ public class VanillaDb {
 	public static Planner newPlanner() {
 		QueryPlanner qplanner;
 		UpdatePlanner uplanner;
-		ExplainPlanner eplanner;
 
 		try {
 			qplanner = (QueryPlanner) queryPlannerCls.newInstance();
 			uplanner = (UpdatePlanner) updatePlannerCls.newInstance();
-			eplanner = (ExplainPlanner) explainPlannerCls.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 			return null;
 		}
 
-		return new Planner(qplanner, uplanner, eplanner);
+		return new Planner(qplanner, uplanner);
 	}
 
 	/**

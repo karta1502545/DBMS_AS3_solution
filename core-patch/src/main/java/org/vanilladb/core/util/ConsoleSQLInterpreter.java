@@ -81,16 +81,19 @@ public class ConsoleSQLInterpreter {
 				totalwidth += width;
 				String fmt = "%" + width + "s";
 				if (cmdf.startsWith("EXPLAIN"))
-					System.out.format("%s", md.getColumnName(i));
+					{System.out.format("%s", md.getColumnName(i)); totalwidth = 64;}
 				else
 					System.out.format(fmt, md.getColumnName(i));
+				// if(numcols > 1 && i < numcols)
+				// 	System.out.format("%s", " | ");
 			}
 
 			System.out.println();
 			for (int i = 0; i < totalwidth; i++)
 				System.out.print("-");
-			if (!cmdf.startsWith("EXPLAIN"))
-				System.out.println();
+			System.out.println();
+			// if (!cmdf.startsWith("EXPLAIN"))
+			// 	System.out.println();
 
 			rs.beforeFirst();
 			// print records
@@ -107,6 +110,8 @@ public class ConsoleSQLInterpreter {
 						System.out.format(fmt + "f", rs.getDouble(fldname));
 					else
 						System.out.format(fmt + "s", rs.getString(fldname));
+					// if(rs.next())
+					// 	System.out.format("%s", " | ");
 				}
 				System.out.println();
 			}
