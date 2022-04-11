@@ -18,13 +18,14 @@ package org.vanilladb.core.query.algebra;
 import java.util.Set;
 
 import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 /**
  * The {@link Plan} class corresponding to the <em>project</em> relational
  * algebra operator.
  */
-public class ProjectPlan implements Plan {
+public class ExplainPlan implements Plan {
 	/**
 	 * Returns a histogram that approximates the join frequency distribution of
 	 * the projected values from the specified histograms onto the specified
@@ -45,7 +46,6 @@ public class ProjectPlan implements Plan {
 	}
 
 	private Plan p;
-	private Schema schema = new Schema();
 	private Histogram hist;
 
 	/**
@@ -57,11 +57,8 @@ public class ProjectPlan implements Plan {
 	 * @param fldNames
 	 *            the list of fields
 	 */
-	public ProjectPlan(Plan p, Set<String> fldNames) {
+	public ExplainPlan(Plan p) {
 		this.p = p;
-		for (String fldname : fldNames)
-			schema.add(fldname, p.schema());
-		hist = projectHistogram(p.histogram(), fldNames);
 	}
 
 	/**
@@ -72,7 +69,9 @@ public class ProjectPlan implements Plan {
 	@Override
 	public Scan open() {
 		Scan s = p.open();
-		return new ProjectScan(s, schema.fields());
+        Schema schema = schema();
+        String str = p.toString();
+		return new ExplainScan(s ,schema, str);
 	}
 
 	/**
@@ -93,6 +92,10 @@ public class ProjectPlan implements Plan {
 	 */
 	@Override
 	public Schema schema() {
+        Schema schema = new Schema();
+
+        // 500
+        schema.addField("query-plan", Type.VARCHAR(500));
 		return schema;
 	}
 
@@ -110,19 +113,5 @@ public class ProjectPlan implements Plan {
 	@Override
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
-	}
-
-	@Override
-	public String toString() {
-		String c = p.toString();
-		String[] cs = c.split("\n");
-		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("ProjectPlan (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
-		for (String child : cs)
-			sb.append("\t").append(child).append("\n");
-		;
-		return sb.toString();
 	}
 }
