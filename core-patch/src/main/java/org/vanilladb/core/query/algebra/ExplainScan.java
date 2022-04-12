@@ -29,6 +29,8 @@ import java.util.Collection;
 public class ExplainScan implements Scan {
 	private Scan s;
 	private ExplainTree explainTree;
+	private String explainString;
+	private boolean executed;
 
 	/**
 	 * Creates a project scan having the specified underlying scan and field
@@ -43,14 +45,18 @@ public class ExplainScan implements Scan {
 	}
 
 	@Override
-	public void beforeFirst() {
-		s.beforeFirst();
-	}
+	public void beforeFirst() { this.executed = false; }
 
 	@Override
 	public boolean next() {
-		return s.next();
+		if (this.executed)
+			return false;
+
+		explainString = generateExplainString();
+		this.executed = true;
+		return true;
 	}
+
 
 	@Override
 	public void close() {
@@ -62,7 +68,7 @@ public class ExplainScan implements Scan {
 		if (fldName.equals("query-plan"))
 			return Constant.newInstance(
 					Type.VARCHAR,
-					getExplainString().getBytes()
+					explainString.getBytes()
 			);
 		else if (hasField(fldName))
 			return s.getVal(fldName);
@@ -78,30 +84,43 @@ public class ExplainScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) { return s.hasField(fldName); }
 
-	private String getExplainString() {
-		String ans = "\n" + getRecursiveExplainString(0, this.explainTree);
-		ans += String.format("Actual #recs: %d\n", this.explainTree.getOutputRecords());
-		return ans;
-	}
-
 	private static String indentHierarchy(int dep) {
-		String ans = "";
+		StringBuilder result = new StringBuilder();
 		for(int i = 0; i < dep; i++)
-			ans += "\t";
-		return ans;
+			result.append("\t");
+		return result.toString();
 	}
 
 	private static String getRecursiveExplainString(int dep, ExplainTree et) {
-		String ans = String.format(
+		StringBuilder result = new StringBuilder(String.format(
 				"-> %s %s (#blks=%d, #recs=%d)\n",
 				et.getPlanType(),
 				et.getDetails() == null ? "" : et.getDetails(),
 				et.getBlocksAccessed(),
 				et.getOutputRecords()
-		);
+		));
 		dep += 1;
 		for(ExplainTree e : et.getChildren())
-			ans += indentHierarchy(dep) + getRecursiveExplainString(dep, e);
-		return ans;
+			result.append(indentHierarchy(dep)).append(getRecursiveExplainString(dep, e));
+		return result.toString();
+	}
+
+	private String generateExplainString() {
+		String result = "\n" + getRecursiveExplainString(0, this.explainTree);
+
+		long actualRecs = getActualRecordCount();
+
+		result += String.format("Actual #recs: %d\n", actualRecs);
+		return result;
+	}
+
+	private long getActualRecordCount() {
+		long cnt = 0;
+		s.beforeFirst();
+
+		while (s.next())
+			cnt++;
+
+		return cnt;
 	}
 }
