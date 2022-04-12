@@ -25,17 +25,13 @@ import org.vanilladb.core.sql.Constant;
  */
 public class ExplainScan implements Scan {
 	private String info;
-	private Boolean flag;
 
 	/**
 	 * Creates a product scan having the two underlying scans.
-	 * 
 	 * @param info
-	 * @param flag
 	 */
 	public ExplainScan(String info) {
 		this.info = info;
-		this.flag = false;
 	}
 
 	/**
@@ -58,11 +54,9 @@ public class ExplainScan implements Scan {
 	 */
 	@Override
 	public boolean next() {
-		if(!flag){     
-			flag=true;
-			return true;
-		}
-		else return false;
+		if(this.info == "")
+			return false;
+		return true;
 	}
 
 	/**
@@ -84,14 +78,12 @@ public class ExplainScan implements Scan {
 	 */
 	@Override
 	public Constant getVal(String fldName) {
-		return new VarcharConstant(this.info);
+		Constant output = new VarcharConstant(this.info);
+		this.info = "";
+		return output;
 	}
 
-	/**
-	 * Returns true if the specified field is in either of the underlying scans.
-	 * 
-	 * @see Scan#hasField(java.lang.String)
-	 */
+	
 	@Override
 	public boolean hasField(String fldName) {
 		return false;

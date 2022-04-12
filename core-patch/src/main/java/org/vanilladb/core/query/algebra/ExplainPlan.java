@@ -36,7 +36,6 @@ public class ExplainPlan implements Plan {
 
 	private Plan p;
 	private Schema schema = new Schema();
-	private Histogram hist;
 
 	/**
 	 * Creates a new product node in the query tree, having the two specified
@@ -48,7 +47,6 @@ public class ExplainPlan implements Plan {
 	public ExplainPlan(Plan p) {
 		this.p = p;
 		schema.addField("query-plan", VARCHAR);
-		hist = p.histogram();
 	}
 
 	/**
@@ -94,7 +92,7 @@ public class ExplainPlan implements Plan {
 	 */
 	@Override
 	public Histogram histogram() {
-		return hist;
+		return p.histogram();
 	}
 
 	/**
@@ -104,7 +102,7 @@ public class ExplainPlan implements Plan {
 	 */
 	@Override
 	public long recordsOutput() {
-		return (long) histogram().recordsOutput();
+		return p.recordsOutput();
 	}
 
 	@Override
