@@ -13,8 +13,7 @@ public class ExplainPlan implements Plan {
 	public ExplainPlan(Plan p) {
 		this.p = p;
 		schema.addField("query-plan", VARCHAR(500));
-		planTree += "->Explain Query Test\n";
-		planTree += "\t->Explain Query Test 1";
+		planTree += p.toString();
 	}
 
 	@Override

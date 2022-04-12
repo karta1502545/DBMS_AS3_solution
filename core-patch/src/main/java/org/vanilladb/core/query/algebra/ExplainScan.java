@@ -21,7 +21,7 @@ public class ExplainScan implements Scan {
 			actualRecords++;
 		}
 		s.beforeFirst();
-		this.planTree += "\n\nActual #recs: " + actualRecords;
+		this.planTree += "\nActual #recs: " + actualRecords;
 	}
 	
 	@Override
