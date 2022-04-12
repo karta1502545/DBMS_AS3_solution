@@ -87,7 +87,6 @@ public class QueryData {
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
 		this.explain = explain;
-		System.out.println("Explain query QueryData constructed"); // [AS3 TMP]
 	}
 
 	/**
