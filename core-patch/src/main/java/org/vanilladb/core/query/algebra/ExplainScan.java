@@ -12,7 +12,7 @@ public class ExplainScan implements Scan {
 	
 	public ExplainScan(Plan p, Scan s, Schema schema) {
 		this.schema = schema;
-		result = p.toString();
+		result = "\n"+p.toString();
 		
 		s.beforeFirst();
 		while (s.next())
