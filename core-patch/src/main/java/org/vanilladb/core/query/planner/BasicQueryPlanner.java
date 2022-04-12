@@ -98,7 +98,7 @@ public class BasicQueryPlanner implements QueryPlanner {
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 		
 		p = new ExplainPlan(p);
-		// TODO: actual #recs
+
 		return p;
 	}
 }

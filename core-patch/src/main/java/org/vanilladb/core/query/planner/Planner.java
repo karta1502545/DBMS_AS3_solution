@@ -56,7 +56,7 @@ public class Planner {
 	public Plan createExplainPlan(String qry, Transaction tx) {
 		Parser parser = new Parser(qry);
 		QueryData data = parser.explainCommand();
-		Verifier.verifyExplainData(data, tx);
+		Verifier.verifyQueryData(data, tx);
 		return qPlanner.explainPlan(data, tx);
 	}
 

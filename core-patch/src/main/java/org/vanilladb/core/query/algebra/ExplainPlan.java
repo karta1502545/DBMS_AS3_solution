@@ -54,7 +54,7 @@ public class ExplainPlan implements Plan {
 	@Override
 	public Scan open() {
 		Scan s = p.open();
-		return new ExplainScan(s, p.toString(), schema.fields());
+		return new ExplainScan(s, this.toString(), schema.fields());
 	}
 
 	/**
@@ -96,6 +96,10 @@ public class ExplainPlan implements Plan {
 
     @Override
     public String toString() {
-        return p.toString();
+		String c = p.toString();
+		StringBuilder sb = new StringBuilder();
+		sb.append(c);
+		sb.append("\nActual #recs: " + p.recordsOutput() + "\n");
+        return sb.toString();
     }
 }
