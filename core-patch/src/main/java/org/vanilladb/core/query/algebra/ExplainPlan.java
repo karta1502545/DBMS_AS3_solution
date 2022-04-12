@@ -27,6 +27,7 @@ public class ExplainPlan implements Plan {
 	private Plan p;
 	private Schema schema = new Schema();
 	private Histogram hist;
+	private int ac;
 
 	/**
 	 * Creates a new project node in the query tree, having the specified
@@ -39,10 +40,8 @@ public class ExplainPlan implements Plan {
 	 */
 	public ExplainPlan(Plan p) {
 		this.p = p;
-		// FIXME: according to README, this field is VARCHAR(500) type
-		//        However, assign 500 cause output format unclear
-		// schema.addField("query-plan", Type.VARCHAR(500));
-		schema.addField("query-plan", Type.VARCHAR);
+		this.ac = 0;
+		schema.addField("query-plan", Type.VARCHAR(500));
 	}
 
 	/**
@@ -53,6 +52,10 @@ public class ExplainPlan implements Plan {
 	@Override
 	public Scan open() {
 		Scan s = p.open();
+		s.beforeFirst();
+		while(s.next()) {
+			this.ac++;
+		}
 		return new ExplainScan(s, this.toString(), schema.fields());
 	}
 
@@ -97,8 +100,9 @@ public class ExplainPlan implements Plan {
     public String toString() {
 		String c = p.toString();
 		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
 		sb.append(c);
-		sb.append("\nActual #recs: " + p.recordsOutput() + "\n");
+		sb.append("\nActual #recs: " + this.ac+ "\n");
         return sb.toString();
     }
 }

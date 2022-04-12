@@ -80,11 +80,8 @@ public class ConsoleSQLInterpreter {
 				int width = md.getColumnDisplaySize(i);
 				totalwidth += width;
 				String fmt = "%" + width + "s";
-				if (cmdf.startsWith("EXPLAIN")) {
+				if (cmdf.startsWith("EXPLAIN"))
 					System.out.format("%s", md.getColumnName(i));
-					// FIXME: set to 64 to make output clear
-					totalwidth = 64;
-				}
 				else
 					System.out.format(fmt, md.getColumnName(i));
 			}
@@ -92,9 +89,8 @@ public class ConsoleSQLInterpreter {
 			System.out.println();
 			for (int i = 0; i < totalwidth; i++)
 				System.out.print("-");
-			// FIXME: also need newline in 'explain' query
-			// if (!cmdf.startsWith("EXPLAIN"))
-			System.out.println();
+			if (!cmdf.startsWith("EXPLAIN"))
+				System.out.println();
 
 			rs.beforeFirst();
 			// print records
@@ -111,8 +107,6 @@ public class ConsoleSQLInterpreter {
 						System.out.format(fmt + "f", rs.getDouble(fldname));
 					else
 						System.out.format(fmt + "s", rs.getString(fldname));
-					// if(rs.next())
-					// 	System.out.format("%s", " | ");
 				}
 				System.out.println();
 			}
