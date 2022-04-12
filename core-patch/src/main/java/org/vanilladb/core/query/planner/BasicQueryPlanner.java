@@ -67,37 +67,8 @@ public class BasicQueryPlanner implements QueryPlanner {
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 
-		return p;
-	}
-
-	@Override
-	public Plan explainPlan(QueryData data, Transaction tx) {
-		// Step 1: Create a plan for each mentioned table or view
-		List<Plan> plans = new ArrayList<Plan>();
-		for (String tblname : data.tables()) {
-			String viewdef = VanillaDb.catalogMgr().getViewDef(tblname, tx);
-			if (viewdef != null)
-				plans.add(VanillaDb.newPlanner().createExplainPlan(viewdef, tx));
-			else
-				plans.add(new TablePlan(tblname, tx));
-		}
-		// Step 2: Create the product of all table plans
-		Plan p = plans.remove(0);
-		for (Plan nextplan : plans)
-			p = new ProductPlan(p, nextplan);
-		// Step 3: Add a selection plan for the predicate
-		p = new SelectPlan(p, data.pred());
-		// Step 4: Add a group-by plan if specified
-		if (data.groupFields() != null) {
-			p = new GroupByPlan(p, data.groupFields(), data.aggregationFn(), tx);
-		}
-		// Step 5: Project onto the specified fields
-		p = new ProjectPlan(p, data.projectFields());
-		// Step 6: Add a sort plan if specified
-		if (data.sortFields() != null)
-			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
-		
-		p = new ExplainPlan(p);
+		if (data.isExplain())
+			p = new ExplainPlan(p);
 
 		return p;
 	}

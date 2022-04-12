@@ -224,50 +224,16 @@ public class Parser {
 	}
 
 	/*
-	 * Methods for parsing explain queries.
-	 */
-	public QueryData explainCommand() {
-		lex.eatKeyword("explain");
-		lex.eatKeyword("select");
-		ProjectList projs = projectList();
-		lex.eatKeyword("from");
-		Set<String> tables = idSet();
-		Predicate pred = new Predicate();
-		if (lex.matchKeyword("where")) {
-			lex.eatKeyword("where");
-			pred = predicate();
-		}
-		/*
-		* Non-null group-by fields (but may be empty) if "group by" appears or
-		* there is an aggFn in the project list.
-		*/
-		Set<String> groupFields = null;
-		if (lex.matchKeyword("group")) {
-			lex.eatKeyword("group");
-			lex.eatKeyword("by");
-			groupFields = idSet();
-		}
-		if (groupFields == null && projs.aggregationFns() != null)
-			groupFields = new HashSet<String>();
-		// Need to preserve the order of sort fields
-		List<String> sortFields = null;
-		List<Integer> sortDirs = null;
-		if (lex.matchKeyword("order")) {
-			lex.eatKeyword("order");
-			lex.eatKeyword("by");
-			// neither null nor empty if "sort by" appears
-			SortList sortList = sortList();
-			sortFields = sortList.fieldList();
-			sortDirs = sortList.directionList();
-		}
-		return new QueryData(projs.asStringSet(), tables, pred,
-				groupFields, projs.aggregationFns(), sortFields, sortDirs);
-	}
-
-	/*
 	 * Methods for parsing queries.
 	 */
+
 	public QueryData queryCommand() {
+		Boolean isExplain = false;
+		if (lex.matchKeyword("explain")) {
+			lex.eatKeyword("explain");
+			isExplain = true;
+		}
+
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
 		lex.eatKeyword("from");
@@ -301,7 +267,7 @@ public class Parser {
 			sortDirs = sortList.directionList();
 		}
 		return new QueryData(projs.asStringSet(), tables, pred,
-				groupFields, projs.aggregationFns(), sortFields, sortDirs);
+				groupFields, projs.aggregationFns(), sortFields, sortDirs, isExplain);
 	}
 
 	/*
@@ -619,12 +585,12 @@ public class Parser {
 		lex.eatDelim('(');
 		List<String> fldNames = idList();
 		lex.eatDelim(')');
-		
+
 		// Index type
 		IndexType idxType = DEFAULT_INDEX_TYPE;
 		if (lex.matchKeyword("using")) {
 			lex.eatKeyword("using");
-			
+
 			if (lex.matchKeyword("hash")) {
 				lex.eatKeyword("hash");
 				idxType = IndexType.HASH;
@@ -634,7 +600,7 @@ public class Parser {
 			} else
 				throw new UnsupportedOperationException();
 		}
-		
+
 		return new CreateIndexData(idxName, tblName, fldNames, idxType);
 	}
 

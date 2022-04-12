@@ -26,13 +26,13 @@ import java.util.Collection;
  */
 public class ExplainScan implements Scan {
 	private Scan s;
-    private Constant ex;
+	private Constant ex;
 	private Collection<String> fieldList;
 	private Boolean next;
 
 	/**
 	 * Creates a select scan having the specified underlying scan and predicate.
-	 * 
+	 *
 	 * @param s
 	 *            the scan of the underlying query
 	 * @param pred
@@ -56,7 +56,7 @@ public class ExplainScan implements Scan {
 	 * Move to the next record satisfying the predicate. The method repeatedly
 	 * calls next on the underlying scan until a suitable record is found, or
 	 * the underlying scan contains no more records.
-	 * 
+	 *
 	 * @see Scan#next()
 	 */
 	@Override
@@ -67,7 +67,7 @@ public class ExplainScan implements Scan {
     @Override
 	public Constant getVal(String fldName) {
 		//return ex;
-		if(hasField(fldName)) 
+		if(hasField(fldName))
 			{this.next = false; return ex;}
 		throw new RuntimeException("field " + fldName + " not found.");
 	}

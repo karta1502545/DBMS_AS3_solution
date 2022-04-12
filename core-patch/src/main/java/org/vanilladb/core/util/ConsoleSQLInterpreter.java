@@ -46,7 +46,7 @@ public class ConsoleSQLInterpreter {
 				System.out.println();
 
 				String [] str = cmd.split(" ");
-				String cmdf = str[0].toUpperCase();	
+				String cmdf = str[0].toUpperCase();
 
 				if (cmd.startsWith("exit") || cmd.startsWith("EXIT"))
 					break;
@@ -80,20 +80,21 @@ public class ConsoleSQLInterpreter {
 				int width = md.getColumnDisplaySize(i);
 				totalwidth += width;
 				String fmt = "%" + width + "s";
-				if (cmdf.startsWith("EXPLAIN"))
-					{System.out.format("%s", md.getColumnName(i)); totalwidth = 64;}
+				if (cmdf.startsWith("EXPLAIN")) {
+					System.out.format("%s", md.getColumnName(i));
+					// FIXME: set to 64 to make output clear
+					totalwidth = 64;
+				}
 				else
 					System.out.format(fmt, md.getColumnName(i));
-				// if(numcols > 1 && i < numcols)
-				// 	System.out.format("%s", " | ");
 			}
 
 			System.out.println();
 			for (int i = 0; i < totalwidth; i++)
 				System.out.print("-");
-			System.out.println();
+			// FIXME: also need newline in 'explain' query
 			// if (!cmdf.startsWith("EXPLAIN"))
-			// 	System.out.println();
+			System.out.println();
 
 			rs.beforeFirst();
 			// print records

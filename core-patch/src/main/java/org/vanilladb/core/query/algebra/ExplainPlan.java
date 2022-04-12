@@ -15,12 +15,8 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
-import org.vanilladb.core.storage.metadata.statistics.Bucket;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 /**
@@ -35,7 +31,7 @@ public class ExplainPlan implements Plan {
 	/**
 	 * Creates a new project node in the query tree, having the specified
 	 * subquery and field list.
-	 * 
+	 *
 	 * @param p
 	 *            the subquery
 	 * @param fldNames
@@ -43,12 +39,15 @@ public class ExplainPlan implements Plan {
 	 */
 	public ExplainPlan(Plan p) {
 		this.p = p;
-        schema.addField("query-plan", Type.VARCHAR);
+		// FIXME: according to README, this field is VARCHAR(500) type
+		//        However, assign 500 cause output format unclear
+		// schema.addField("query-plan", Type.VARCHAR(500));
+		schema.addField("query-plan", Type.VARCHAR);
 	}
 
 	/**
 	 * Creates a project scan for this query.
-	 * 
+	 *
 	 * @see Plan#open()
 	 */
 	@Override
@@ -60,7 +59,7 @@ public class ExplainPlan implements Plan {
 	/**
 	 * Estimates the number of block accesses in the projection, which is the
 	 * same as in the underlying query.
-	 * 
+	 *
 	 * @see Plan#blocksAccessed()
 	 */
 	@Override
@@ -70,7 +69,7 @@ public class ExplainPlan implements Plan {
 
 	/**
 	 * Returns the schema of the projection, which is taken from the field list.
-	 * 
+	 *
 	 * @see Plan#schema()
 	 */
 	@Override
@@ -81,7 +80,7 @@ public class ExplainPlan implements Plan {
 	/**
 	 * Returns the histogram that approximates the join distribution of the
 	 * field values of query results.
-	 * 
+	 *
 	 * @see Plan#histogram()
 	 */
 	@Override
