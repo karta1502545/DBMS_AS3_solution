@@ -29,6 +29,7 @@ import java.util.Collection;
 public class ExplainScan implements Scan {
 	private Scan s;
 	private ExplainTree explainTree;
+	private boolean virgin;
 
 	/**
 	 * Creates a project scan having the specified underlying scan and field
@@ -43,13 +44,18 @@ public class ExplainScan implements Scan {
 	}
 
 	@Override
-	public void beforeFirst() {
-		s.beforeFirst();
-	}
+	public void beforeFirst() { this.virgin = true; }
 
 	@Override
 	public boolean next() {
-		return s.next();
+		if(this.virgin) {
+			this.virgin = false;
+			this.s.beforeFirst();
+			while (true)
+				if(!this.s.next())
+					break;
+			return true;
+		} else return false;
 	}
 
 	@Override
