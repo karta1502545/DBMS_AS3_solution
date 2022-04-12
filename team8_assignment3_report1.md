@@ -78,3 +78,6 @@ When calling plan.open(), ExplainPlan will pass the prepared message into a new 
           ->TablePlan on (orders) (#blks=296, #recs=30000)
   Actual #recs: 3000
   ```
+
+* Other thinig worth mentioning
+  * When accessing multiple tables, it will be extremely slow when two table size are large even if there are `WHERE` constrain.
