@@ -3,6 +3,7 @@ package org.vanilladb.core.query.algebra;
 import java.util.Set;
 
 import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 public class explainplan implements Plan{
@@ -11,6 +12,7 @@ public class explainplan implements Plan{
 	private Histogram hist;
 	public explainplan(Plan p) {
 		this.p = p;
+		schema.addField("query-plan", org.vanilladb.core.sql.Type.VARCHAR(500));
 	}
 	public Scan open() {
 		Scan s = p.open();
@@ -31,9 +33,9 @@ public class explainplan implements Plan{
 	public String toString() {
 		String c = p.toString();
 		StringBuilder sb = new StringBuilder();
-		sb.append("query-plan\n");
-		sb.append("-------------------------------------------\n");
+		sb.append("\n");
 		sb.append(c).append("\n");
+		sb.append("Actual #recs: "+p.recordsOutput()+"\n");
 		return sb.toString();
 	}
 }
