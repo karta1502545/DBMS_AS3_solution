@@ -31,7 +31,7 @@ import org.vanilladb.core.storage.tx.Transaction;
 
 /**
  * The object that executes SQL statements.
- * 
+ *
  * @author sciore
  */
 public class Planner {
@@ -45,7 +45,7 @@ public class Planner {
 
 	/**
 	 * Creates a plan for an SQL select statement, using the supplied planner.
-	 * 
+	 *
 	 * @param qry
 	 *            the SQL query string
 	 * @param tx
@@ -53,17 +53,17 @@ public class Planner {
 	 * @return the scan corresponding to the query plan
 	 */
 	public Plan createQueryPlan(String qry, Transaction tx) {
-		Parser parser = new Parser(qry);
-		QueryData data = parser.queryCommand();
-		Verifier.verifyQueryData(data, tx);
-		return qPlanner.createPlan(data, tx);
+			Parser parser = new Parser(qry);
+			QueryData data = parser.queryCommand();
+			Verifier.verifyQueryData(data, tx);
+			return qPlanner.createPlan(data, tx);
 	}
 
 	/**
 	 * Executes an SQL insert, delete, modify, or create statement. The method
 	 * dispatches to the appropriate method of the supplied update planner,
 	 * depending on what the parser returns.
-	 * 
+	 *
 	 * @param cmd
 	 *            the SQL update string
 	 * @param tx

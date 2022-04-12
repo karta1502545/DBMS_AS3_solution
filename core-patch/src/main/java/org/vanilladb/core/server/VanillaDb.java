@@ -81,7 +81,7 @@ public class VanillaDb {
 
 	/**
 	 * Initializes the system. This method is called during system startup.
-	 * 
+	 *
 	 * @param dirName
 	 *            the name of the database directory
 	 */
@@ -91,7 +91,7 @@ public class VanillaDb {
 
 	/**
 	 * Initializes the system. This method is called during system startup.
-	 * 
+	 *
 	 * @param dirName
 	 *            the name of the database directory
 	 * @param factory
@@ -104,7 +104,7 @@ public class VanillaDb {
 				logger.warning("discarding duplicated init request");
 			return;
 		}
-		
+
 		// Set the stored procedure factory
 		spFactory = factory;
 
@@ -120,7 +120,7 @@ public class VanillaDb {
 		updatePlannerCls = CoreProperties.getLoader().getPropertyAsClass(
 				VanillaDb.class.getName() + ".UPDATEPLANNER",
 				BasicUpdatePlanner.class, UpdatePlanner.class);
-		
+
 		// initialize storage engine
 		initFileAndLogMgr(dirName);
 		initTaskMgr();
@@ -150,7 +150,7 @@ public class VanillaDb {
 
 		// initialize the statistics manager to build the histogram
 		initStatMgr(initTx);
-		
+
 		// create a checkpoint
 		txMgr.createCheckpoint(initTx);
 
@@ -169,7 +169,7 @@ public class VanillaDb {
 
 	/**
 	 * Is VanillaDB initialized ?
-	 * 
+	 *
 	 * @return true if it is initialized, otherwise false.
 	 */
 	public static boolean isInited() {
@@ -184,7 +184,7 @@ public class VanillaDb {
 
 	/**
 	 * Initializes only the file manager.
-	 * 
+	 *
 	 * @param dirName
 	 *            the name of the database directory
 	 */
@@ -194,7 +194,7 @@ public class VanillaDb {
 
 	/**
 	 * Initializes the file and log managers.
-	 * 
+	 *
 	 * @param dirName
 	 *            the name of the database directory
 	 */
@@ -220,7 +220,7 @@ public class VanillaDb {
 	/**
 	 * Initializes the catalog manager. Note that the catalog manager should be
 	 * initialized <em>before</em> system recovery.
-	 * 
+	 *
 	 * @param isNew
 	 *            an indication of whether a new database needs to be created.
 	 * @param tx
@@ -233,7 +233,7 @@ public class VanillaDb {
 	/**
 	 * Initializes the statistics manager. Note that this manager should be
 	 * initialized <em>after</em> system recovery.
-	 * 
+	 *
 	 * @param tx
 	 *            the transaction performing the initialization
 	 */
@@ -279,7 +279,7 @@ public class VanillaDb {
 	/**
 	 * Creates a planner for SQL commands. To change how the planner works,
 	 * modify this method.
-	 * 
+	 *
 	 * @return the system's planner for SQL commands
 	 */
 	public static Planner newPlanner() {

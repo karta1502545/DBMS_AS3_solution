@@ -5,3 +5,7 @@
 /**/.classpath
 /**/.project
 /.metadata/
+
+.DS_STORE
+.vscode
+as3_DB

@@ -43,7 +43,7 @@ import org.vanilladb.core.storage.tx.Transaction;
 /**
  * The verifier which examines the semantic of input query and update
  * statements.
- * 
+ *
  */
 public class Verifier {
 
@@ -101,7 +101,7 @@ public class Verifier {
 		if (data.sortFields() != null)
 			for (String sortFld : data.sortFields()) {
 				boolean isValid = verifyField(schs, views, sortFld);
-				
+
 				// aggregation field may appear after order by
 				// example: select count(fld1), fld2 from table group by fld2 order by count(fld1);
 				// we need the following checks to make count(fld1) valid
@@ -144,7 +144,7 @@ public class Verifier {
 		for (int i = 0; i < fields.size(); i++) {
 			String field = fields.get(i);
 			Constant val = vals.get(i);
-			
+
 			// check field existence
 			if (!sch.hasField(field))
 				throw new BadSemanticException("field " + field
@@ -219,7 +219,7 @@ public class Verifier {
 		if (ti == null)
 			throw new BadSemanticException("table " + tableName
 					+ " does not exist");
-		
+
 		// examine if column exist
 		Schema sch = ti.schema();
 		List<String> fieldNames = data.fieldNames();
@@ -228,7 +228,7 @@ public class Verifier {
 				throw new BadSemanticException("field " + fieldName
 						+ " does not exist in table " + tableName);
 		}
-		
+
 		// examine the index name
 		if (VanillaDb.catalogMgr().getIndexInfoByName(data.indexName(), tx) != null)
 			throw new BadSemanticException("index " + data.indexName()
@@ -282,7 +282,7 @@ public class Verifier {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }
