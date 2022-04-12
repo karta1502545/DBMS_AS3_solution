@@ -112,6 +112,7 @@ public class ExplainPlan implements Plan {
 
 	@Override
 	public long recordsOutput() {
-		return (long) histogram().recordsOutput();
+		// Since we have exactly one record.
+		return 1;
 	}
 }
