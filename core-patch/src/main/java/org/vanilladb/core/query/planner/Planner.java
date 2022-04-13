@@ -35,12 +35,12 @@ import org.vanilladb.core.storage.tx.Transaction;
  * @author sciore
  */
 public class Planner {
-	private QueryPlanner qPlanner;
-	private UpdatePlanner uPlanner;
+	private As3QueryPlanner qPlanner;
+	private As3UpdatePlanner uPlanner;
 
 	public Planner(QueryPlanner qPlanner, UpdatePlanner uPlanner) {
-		this.qPlanner = qPlanner;
-		this.uPlanner = uPlanner;
+		this.qPlanner = (As3QueryPlanner) qPlanner;
+		this.uPlanner = (As3UpdatePlanner) uPlanner;
 	}
 
 	/**
@@ -56,7 +56,11 @@ public class Planner {
 		Parser parser = new Parser(qry);
 		QueryData data = parser.queryCommand();
 		Verifier.verifyQueryData(data, tx);
-		return qPlanner.createPlan(data, tx);
+		if (parser.isExplain()) {
+			return qPlanner.ExplainCreatePlan(data, tx);
+		} else {
+			return qPlanner.createPlan(data, tx);
+		}
 	}
 
 	/**
@@ -70,39 +74,55 @@ public class Planner {
 	 *            the transaction
 	 * @return an integer denoting the number of affected records
 	 */
+	
 	public int executeUpdate(String cmd, Transaction tx) {
 		if (tx.isReadOnly())
 			throw new UnsupportedOperationException();
 		Parser parser = new Parser(cmd);
 		Object obj = parser.updateCommand();
-		if (obj.getClass().equals(InsertData.class)) {
-			Verifier.verifyInsertData((InsertData) obj, tx);
-			return uPlanner.executeInsert((InsertData) obj, tx);
-		} else if (obj.getClass().equals(DeleteData.class)) {
-			Verifier.verifyDeleteData((DeleteData) obj, tx);
-			return uPlanner.executeDelete((DeleteData) obj, tx);
-		} else if (obj.getClass().equals(ModifyData.class)) {
-			Verifier.verifyModifyData((ModifyData) obj, tx);
-			return uPlanner.executeModify((ModifyData) obj, tx);
-		} else if (obj.getClass().equals(CreateTableData.class)) {
-			Verifier.verifyCreateTableData((CreateTableData) obj, tx);
-			return uPlanner.executeCreateTable((CreateTableData) obj, tx);
-		} else if (obj.getClass().equals(CreateViewData.class)) {
-			Verifier.verifyCreateViewData((CreateViewData) obj, tx);
-			return uPlanner.executeCreateView((CreateViewData) obj, tx);
-		} else if (obj.getClass().equals(CreateIndexData.class)) {
-			Verifier.verifyCreateIndexData((CreateIndexData) obj, tx);
-			return uPlanner.executeCreateIndex((CreateIndexData) obj, tx);
-		} else if (obj.getClass().equals(DropTableData.class)) {
-			Verifier.verifyDropTableData((DropTableData) obj, tx);
-			return uPlanner.executeDropTable((DropTableData) obj, tx);
-		} else if (obj.getClass().equals(DropViewData.class)) {
-			Verifier.verifyDropViewData((DropViewData) obj, tx);
-			return uPlanner.executeDropView((DropViewData) obj, tx);
-		} else if (obj.getClass().equals(DropIndexData.class)) {
-			Verifier.verifyDropIndexData((DropIndexData) obj, tx);
-			return uPlanner.executeDropIndex((DropIndexData) obj, tx);
-		} else
-			throw new UnsupportedOperationException();
+		if (parser.isExplain()) {
+			if (obj.getClass().equals(InsertData.class)) {
+				Verifier.verifyInsertData((InsertData) obj, tx);
+				return uPlanner.ExplainExecuteInsert((InsertData) obj, tx);
+			} else if (obj.getClass().equals(DeleteData.class)) {
+				Verifier.verifyDeleteData((DeleteData) obj, tx);
+				return uPlanner.ExplainExecuteDelete((DeleteData) obj, tx);
+			} else if (obj.getClass().equals(ModifyData.class)) {
+				Verifier.verifyModifyData((ModifyData) obj, tx);
+				return uPlanner.ExplainExecuteModify((ModifyData) obj, tx);
+			} else
+				throw new UnsupportedOperationException();
+		} else {
+			if (obj.getClass().equals(InsertData.class)) {
+				Verifier.verifyInsertData((InsertData) obj, tx);
+				return uPlanner.executeInsert((InsertData) obj, tx);
+			} else if (obj.getClass().equals(DeleteData.class)) {
+				Verifier.verifyDeleteData((DeleteData) obj, tx);
+				return uPlanner.executeDelete((DeleteData) obj, tx);
+			} else if (obj.getClass().equals(ModifyData.class)) {
+				Verifier.verifyModifyData((ModifyData) obj, tx);
+				return uPlanner.executeModify((ModifyData) obj, tx);
+			} else if (obj.getClass().equals(CreateTableData.class)) {
+				Verifier.verifyCreateTableData((CreateTableData) obj, tx);
+				return uPlanner.executeCreateTable((CreateTableData) obj, tx);
+			} else if (obj.getClass().equals(CreateViewData.class)) {
+				Verifier.verifyCreateViewData((CreateViewData) obj, tx);
+				return uPlanner.executeCreateView((CreateViewData) obj, tx);
+			} else if (obj.getClass().equals(CreateIndexData.class)) {
+				Verifier.verifyCreateIndexData((CreateIndexData) obj, tx);
+				return uPlanner.executeCreateIndex((CreateIndexData) obj, tx);
+			} else if (obj.getClass().equals(DropTableData.class)) {
+				Verifier.verifyDropTableData((DropTableData) obj, tx);
+				return uPlanner.executeDropTable((DropTableData) obj, tx);
+			} else if (obj.getClass().equals(DropViewData.class)) {
+				Verifier.verifyDropViewData((DropViewData) obj, tx);
+				return uPlanner.executeDropView((DropViewData) obj, tx);
+			} else if (obj.getClass().equals(DropIndexData.class)) {
+				Verifier.verifyDropIndexData((DropIndexData) obj, tx);
+				return uPlanner.executeDropIndex((DropIndexData) obj, tx);
+			} else
+				throw new UnsupportedOperationException();
+		}
+
 	}
 }

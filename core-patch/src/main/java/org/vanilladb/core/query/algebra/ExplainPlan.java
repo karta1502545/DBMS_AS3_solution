@@ -18,25 +18,23 @@ public class ExplainPlan implements Plan {
 	private Transaction tx;
 	private Constant c;
 	
-	public ExplainPlan(Plan p, Set<String> fldNames, Transaction tx) {
+	public ExplainPlan(Plan p, Transaction tx) {
 		this.p = p;
-		for (String fldname : fldNames)
-			schema.add(fldname, p.schema());
-		schema.addField("query-plan", VARCHAR(500));
 		this.tx = tx;
 		c = new VarcharConstant(this.toString());
 	}
 	
 	@Override
 	public Scan open() {
-		Schema sch = schema();
-		TempTable temp = new TempTable(sch, tx);
+		schema = p.schema();
+		schema.addField("query-plan", VARCHAR(500));
+		TempTable temp = new TempTable(schema, tx);
 		Scan src = p.open();
 		UpdateScan dest = temp.open();
 		src.beforeFirst();
 		while (src.next()) {
 			dest.insert();
-			for (String fldname : sch.fields()) {
+			for (String fldname : schema.fields()) {
 				if (fldname == "query-plan")
 					dest.setVal(fldname, c);
 				else
