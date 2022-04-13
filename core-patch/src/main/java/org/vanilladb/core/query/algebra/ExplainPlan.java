@@ -21,6 +21,7 @@ public class ExplainPlan implements Plan {
 		return new ExplainScan(s);
 	}
 
+	// since it doesn't do any file manipulation
 	@Override
 	public long blocksAccessed() {
 		return 0;
@@ -37,6 +38,7 @@ public class ExplainPlan implements Plan {
 		return hist;
 	}
 
+	// since it doesn't do any file manipulation
 	@Override
 	public long recordsOutput() {
 		return 0;
