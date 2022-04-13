@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.ProductPlan;
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.ProjectPlan;
 import org.vanilladb.core.query.algebra.SelectPlan;
 import org.vanilladb.core.query.algebra.TablePlan;
@@ -66,7 +67,10 @@ public class BasicQueryPlanner implements QueryPlanner {
 		// Step 6: Add a sort plan if specified
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
-
+		
+		if (data.getIsExplain())
+			p = new ExplainPlan(p);
+		
 		return p;
 	}
 }
