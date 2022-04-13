@@ -60,7 +60,7 @@ public class ExplainScan implements Scan {
 
 	@Override
 	public boolean hasField(String fldName) {
-		return fldName == "query-data";
+		return fldName.contentEquals("query-plan");
 	}
 	
 	
