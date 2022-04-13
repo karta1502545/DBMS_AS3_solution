@@ -35,8 +35,8 @@ public class Lexer {
 	 *            the SQL statement
 	 */
 	public Lexer(String s) {
-		initKeywords();
-		tok = new StreamTokenizer(new StringReader(s));
+		initKeywords(); // init all keywords
+		tok = new StreamTokenizer(new StringReader(s)); // StringReader 裡面存了這個string 跟 length
 		tok.wordChars('_', '_');
 		tok.ordinaryChar('.');
 		/*
@@ -187,8 +187,9 @@ public class Lexer {
 		}
 	}
 
+	// 在這裡加入 explain 這個 keywords
 	private void initKeywords() {
-		keywords = Arrays.asList("select", "from", "where", "and", "insert",
+		keywords = Arrays.asList("explain", "select", "from", "where", "and", "insert",
 				"into", "values", "delete", "drop", "update", "set", "create", "table",
 				"int", "double", "varchar", "view", "as", "index", "on",
 				"long", "order", "by", "asc", "desc", "sum", "count", "avg",
