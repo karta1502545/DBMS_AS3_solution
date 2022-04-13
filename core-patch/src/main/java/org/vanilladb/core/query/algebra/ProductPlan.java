@@ -139,5 +139,17 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	public String toString() {
+		String c1 = p1.toString();
+		String c2 = p2.toString();
+		String[] cs1 = c1.split("\n");
+		String[] cs2 = c2.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("ProductPlan	(#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		sb.append("\t").append(cs1).append("\n");
+		sb.append("\t").append(cs2);
+		return sb.toString();
+	}
 }
