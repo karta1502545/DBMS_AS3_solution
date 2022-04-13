@@ -95,10 +95,11 @@ public class SortPlan implements Plan {
 		 */
 		if (runs.size() == 0)
 			return src;
-		src.close();
+		// leave it for scan
+		// src.close();
 		while (runs.size() > 2)
 			runs = doAMergeIteration(runs);
-		return new SortScan(runs, comp);
+		return new SortScan(src, runs, comp, this.blocksAccessed(), this.recordsOutput());
 	}
 
 	/**

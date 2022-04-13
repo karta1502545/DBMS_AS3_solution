@@ -33,7 +33,10 @@ public class SortScan implements Scan {
 	private RecordComparator comp;
 	private boolean hasMore1, hasMore2 = false;
 	private List<RecordId> savedPosition;
-
+	private long blocksAccessed = 0;
+	private long recordsOutput = 0;
+	private Scan src = null;
+	
 	/**
 	 * Creates a sort scan, given a list of 1 or 2 runs. If there is only 1 run,
 	 * then s2 will be null and hasMore2 will be false.
@@ -48,6 +51,16 @@ public class SortScan implements Scan {
 		s1 = (UpdateScan) runs.get(0).open();
 		if (runs.size() > 1)
 			s2 = (UpdateScan) runs.get(1).open();
+	}
+
+	public SortScan(Scan src, List<TempTable> runs, RecordComparator comp, long blocksAccessed, long recordsOutput) {
+		this.comp = comp;
+		s1 = (UpdateScan) runs.get(0).open();
+		if (runs.size() > 1)
+			s2 = (UpdateScan) runs.get(1).open();
+		this.src = src;
+		this.blocksAccessed = blocksAccessed;
+		this.recordsOutput = recordsOutput;
 	}
 
 	/**
@@ -106,6 +119,8 @@ public class SortScan implements Scan {
 		s1.close();
 		if (s2 != null)
 			s2.close();
+		if (this.src != null)
+			this.src.close();
 	}
 
 	/**
@@ -147,5 +162,12 @@ public class SortScan implements Scan {
 		s1.moveToRecordId(rid1);
 		if (rid2 != null)
 			s2.moveToRecordId(rid2);
+	}
+
+	@Override
+	public String explainScan() {
+		String explain = "->SortPlan: (#blks=" + this.blocksAccessed + ", #records=" + this.recordsOutput + ")\n";
+		explain = explain + src.explainScan();
+		return explain;
 	}
 }

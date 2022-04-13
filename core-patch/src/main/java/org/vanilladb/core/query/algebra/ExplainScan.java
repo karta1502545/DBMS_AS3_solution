@@ -15,14 +15,11 @@ public class ExplainScan implements Scan {
 
 	@Override
 	public Constant getVal(String fldName) {
-		String explain = "";
-		// = "->" + ProductPlan + ": (#blks=" + this.blockAccess + ", #records=" + this.recordsOutput + ")\n";
-		// let other ascendent do first
-//		System.out.println(s);
+		String explain = "\n" + s.explainScan();
 		while(s.next()) {
 			record_num++;
 		}
-//		explain = explain + "Actual #recs: " + record_num;
+		explain = explain + "Actual #recs: " + record_num;
 		return new VarcharConstant(explain, Type.VARCHAR(500));
 	}
 
@@ -58,4 +55,9 @@ public class ExplainScan implements Scan {
 			return false;
 	}
 
+	@Override
+	// since this scan has nothing to explain
+	public String explainScan() {
+		return "";
+	}
 }

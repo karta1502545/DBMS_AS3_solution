@@ -52,4 +52,6 @@ public interface Scan extends Record {
 	 * @return true if the scan has that field
 	 */
 	boolean hasField(String fldName);
+	
+	String explainScan();
 }

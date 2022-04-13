@@ -27,6 +27,8 @@ import org.vanilladb.core.sql.Constant;
 public class ProjectScan implements Scan {
 	private Scan s;
 	private Collection<String> fieldList;
+	private long blocksAccessed = 0;
+	private long recordsOutput = 0;
 
 	/**
 	 * Creates a project scan having the specified underlying scan and field
@@ -40,6 +42,13 @@ public class ProjectScan implements Scan {
 	public ProjectScan(Scan s, Collection<String> fieldList) {
 		this.s = s;
 		this.fieldList = fieldList;
+	}
+	
+	public ProjectScan(Scan s, Collection<String> fieldList, long blocksAccessed, long recordsOutput) {
+		this.s = s;
+		this.fieldList = fieldList;
+		this.blocksAccessed = blocksAccessed;
+		this.recordsOutput = recordsOutput;
 	}
 
 	@Override
@@ -73,5 +82,12 @@ public class ProjectScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) {
 		return fieldList.contains(fldName);
+	}
+
+	@Override
+	public String explainScan() {
+		String explain = "->ProjectPlan: (#blks=" + this.blocksAccessed + ", #records=" + this.recordsOutput + ")\n" ;
+		explain = explain + s.explainScan();
+		return explain;
 	}
 }

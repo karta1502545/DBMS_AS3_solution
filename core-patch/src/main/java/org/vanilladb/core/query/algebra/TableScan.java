@@ -30,6 +30,9 @@ import org.vanilladb.core.storage.tx.Transaction;
 public class TableScan implements UpdateScan {
 	private RecordFile rf;
 	private Schema schema;
+	private String tableName;
+	private long blocksAccessed = 0;
+	private long recordsOutput = 0;
 
 	/**
 	 * Creates a new table scan, and opens its corresponding record file.
@@ -42,6 +45,15 @@ public class TableScan implements UpdateScan {
 	public TableScan(TableInfo ti, Transaction tx) {
 		rf = ti.open(tx, true);
 		schema = ti.schema();
+		this.tableName = ti.tableName();
+	}
+	
+	public TableScan(TableInfo ti, Transaction tx, long blocksAccessed, long recordsOutput) {
+		rf = ti.open(tx, true);
+		schema = ti.schema();
+		this.blocksAccessed = blocksAccessed;
+		this.recordsOutput = recordsOutput;
+		this.tableName = ti.tableName();
 	}
 
 	// Scan methods
@@ -110,5 +122,11 @@ public class TableScan implements UpdateScan {
 	@Override
 	public void moveToRecordId(RecordId rid) {
 		rf.moveToRecordId(rid);
+	}
+
+	@Override
+	public String explainScan() {
+		String explain = "->TablePlan: on (" + this.tableName + ") (#blks=" + this.blocksAccessed + ", #records=" + this.recordsOutput + ")\n" ;
+		return explain;
 	}
 }

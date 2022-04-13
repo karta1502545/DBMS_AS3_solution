@@ -30,6 +30,8 @@ public class GroupByScan implements Scan {
 	private Collection<AggregationFn> aggFns;
 	private GroupValue groupVal;
 	private boolean moreGroups;
+	private long blocksAccessed = 0;
+	private long recordsOutput = 0;
 
 	/**
 	 * Creates a groupby scan, given a grouped table scan.
@@ -47,6 +49,15 @@ public class GroupByScan implements Scan {
 		this.ss = s;
 		this.groupFlds = groupFlds;
 		this.aggFns = aggFns;
+	}
+	
+	public GroupByScan(Scan s, Collection<String> groupFlds,
+			Collection<AggregationFn> aggFns, long blocksAccessed, long recordsOutput) {
+		this.ss = s;
+		this.groupFlds = groupFlds;
+		this.aggFns = aggFns;
+		this.blocksAccessed = blocksAccessed;
+		this.recordsOutput = recordsOutput;
 	}
 
 	/**
@@ -134,5 +145,12 @@ public class GroupByScan implements Scan {
 				if (fn.fieldName().equals(fldname))
 					return true;
 		return false;
+	}
+
+	@Override
+	public String explainScan() {
+		String explain = "->GroupbyPlan: (#blks=" + this.blocksAccessed + ", #records=" + this.recordsOutput + ")\n";
+		explain = explain + ss.explainScan();
+		return explain;
 	}
 }
