@@ -187,12 +187,13 @@ public class Lexer {
 		}
 	}
 
+	//add keyword explain
 	private void initKeywords() {
 		keywords = Arrays.asList("select", "from", "where", "and", "insert",
 				"into", "values", "delete", "drop", "update", "set", "create", "table",
 				"int", "double", "varchar", "view", "as", "index", "on",
 				"long", "order", "by", "asc", "desc", "sum", "count", "avg",
 				"min", "max", "distinct", "group", "add", "sub", "mul", "div",
-				"using", "hash", "btree");
+				"using", "hash", "btree", "explain");
 	}
 }
