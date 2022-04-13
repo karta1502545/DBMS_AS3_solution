@@ -11,12 +11,11 @@ public class ExplainScan implements Scan {
 	private boolean isBeforeFirst;
 	private String explainRecord;
 	private Scan s;
-	private Schema schema;
 	
-	public ExplainScan(Scan s, Schema sche, String exp)
+	
+	public ExplainScan(Scan s, String exp)
 	{
 		this.s = s;
-		this.schema = sche;
 		explainRecord = "\n" + exp + "Actual #recs: " + actualRun();
 		
 	}
@@ -54,6 +53,7 @@ public class ExplainScan implements Scan {
 	@Override
 	public void close() {
 		s.close();
+		/// dummy method
 	}
 
 	@Override
