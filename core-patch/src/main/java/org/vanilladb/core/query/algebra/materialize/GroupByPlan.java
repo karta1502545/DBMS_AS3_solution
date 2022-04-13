@@ -334,15 +334,13 @@ public class GroupByPlan extends ReduceRecordsPlan {
 
 	@Override
 	public String toString() {
-		String c = sp.toString();
-		String[] cs = c.split("\n");
-		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("GroupByPlan: (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
-		for (String child : cs)
-			sb.append("\t").append(child).append("\n");
-		;
-		return sb.toString();
+		String[] stat = sp.toString().split("\n");
+		StringBuilder result = new StringBuilder();
+		result.append("->GroupByPlan: (#blks=" + blocksAccessed() + ", #recs="+ recordsOutput() + ")\n");
+
+		for (String s : stat)
+			result.append("\t" + s + "\n");
+		
+		return result.toString();
 	}
 }

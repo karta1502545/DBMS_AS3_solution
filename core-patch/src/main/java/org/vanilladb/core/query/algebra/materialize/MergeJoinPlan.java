@@ -121,22 +121,19 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 
 	@Override
 	public String toString() {
-		String c2 = sp2.toString();
-		String[] cs2 = c2.split("\n");
-		String c1 = sp1.toString();
-		String[] cs1 = c1.split("\n");
-		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("MergeJoinPlan (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
+		String[] stat1 = sp1.toString().split("\n");
+		String[] stat2 = sp2.toString().split("\n");
+		StringBuilder result = new StringBuilder();
+		result.append("->MergeJoinPlan  (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
+
 		// right child
-		for (String child : cs2)
-			sb.append("\t").append(child).append("\n");
-		;
+		for (String s : stat2)
+			result.append("\t" + s + "\n");
+
 		// left child
-		for (String child : cs1)
-			sb.append("\t").append(child).append("\n");
-		;
-		return sb.toString();
+		for (String s : stat1)
+			result.append("\t" + s + "\n");
+
+		return result.toString();
 	}
 }

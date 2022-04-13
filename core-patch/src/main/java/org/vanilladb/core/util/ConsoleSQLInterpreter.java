@@ -95,6 +95,7 @@ public class ConsoleSQLInterpreter {
 			rs.beforeFirst();
 			// print records
 			while (rs.next()) {
+				rs.toString();
 				for (int i = 1; i <= numcols; i++) {
 					String fldname = md.getColumnName(i);
 					int fldtype = md.getColumnType(i);

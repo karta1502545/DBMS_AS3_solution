@@ -46,14 +46,14 @@ public class TpccSchemaBuilderProcParamHelper extends StoredProcedureParamHelper
 			"CREATE TABLE order_line ( ol_o_id INT, ol_d_id INT, ol_w_id INT, "
 					+ "ol_number INT, ol_i_id INT, ol_supply_w_id INT, ol_delivery_d LONG, "
 					+ "ol_quantity INT, ol_amount DOUBLE, ol_dist_info VARCHAR(24) )",
-			"CREATE TABLE item ( i_id INT, i_im_id INT, i_name VARCHAR(24), "
-					+ "i_price DOUBLE, i_data VARCHAR(50) )",
 			"CREATE TABLE stock ( s_i_id INT, s_w_id INT, s_quantity INT, "
 					+ "s_dist_01 VARCHAR(24), s_dist_02 VARCHAR(24), s_dist_03 VARCHAR(24), "
 					+ "s_dist_04 VARCHAR(24), s_dist_05 VARCHAR(24), s_dist_06 VARCHAR(24), "
 					+ "s_dist_07 VARCHAR(24), s_dist_08 VARCHAR(24), s_dist_09 VARCHAR(24), "
 					+ "s_dist_10 VARCHAR(24), s_ytd INT, s_order_cnt INT, s_remote_cnt INT, "
-					+ "s_data VARCHAR(50) )" };
+					+ "s_data VARCHAR(50) )",
+			"CREATE TABLE item ( i_id INT, i_im_id INT, i_name VARCHAR(24), "
+					+ "i_price DOUBLE, i_data VARCHAR(50) )"};
 	private final String INDEXES_DDL[] = {
 			"CREATE INDEX idx_warehouse ON warehouse (w_id)",
 			"CREATE INDEX idx_district ON district (d_id)",

@@ -36,6 +36,10 @@ public class ProductScan implements Scan {
 	public ProductScan(Scan s1, Scan s2) {
 		this.s1 = s1;
 		this.s2 = s2;
+		
+		// while(s1.next() || s2.next()) {
+
+		// }
 	}
 
 	/**
