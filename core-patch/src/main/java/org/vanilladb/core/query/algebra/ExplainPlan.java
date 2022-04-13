@@ -70,9 +70,10 @@ public class ExplainPlan implements Plan {
 		String c = p.toString();
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
+		sb.append("\n");
 		for (String child : cs)
-			sb.append(child).append("\n").append("\t");
-		sb.append("\n").append("Actual #recs: "+ recordsOutput());
+			sb.append("\t").append(child).append("\n");
+		sb.append("Actual #recs: "+ recordsOutput());
 		return sb.toString();
 	}
 }
