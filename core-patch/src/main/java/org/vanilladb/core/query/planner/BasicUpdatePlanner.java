@@ -17,7 +17,9 @@ package org.vanilladb.core.query.planner;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Set;
 
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.SelectPlan;
 import org.vanilladb.core.query.algebra.TablePlan;
@@ -126,5 +128,57 @@ public class BasicUpdatePlanner implements UpdatePlanner {
 	public int executeDropIndex(DropIndexData data, Transaction tx) {
 		VanillaDb.catalogMgr().dropIndex(data.indexName(), tx);
 		return 0;
+	}
+	
+	public int ExplainExecuteDelete(DeleteData data, Transaction tx) {
+		Plan p = new TablePlan(data.tableName(), tx);
+		p = new SelectPlan(p, data.pred());
+        p = new ExplainPlan(p, tx);
+		UpdateScan us = (UpdateScan) p.open();
+		us.beforeFirst();
+		int count = 0;
+		while (us.next()) {
+			us.delete();
+			count++;
+		}
+		us.close();
+		
+		VanillaDb.statMgr().countRecordUpdates(data.tableName(), count);
+		return count;
+	}
+
+	public int ExplainExecuteModify(ModifyData data, Transaction tx) {
+		Set<String> S;
+		Plan p = new TablePlan(data.tableName(), tx);
+		p = new SelectPlan(p, data.pred());
+        p = new ExplainPlan(p, tx);
+		UpdateScan us = (UpdateScan) p.open();
+		us.beforeFirst();
+		int count = 0;
+		while (us.next()) {
+			Collection<String> targetflds = data.targetFields();
+			for (String fld : targetflds)
+				us.setVal(fld, data.newValue(fld).evaluate(us));
+			count++;
+		}
+		us.close();
+		
+		VanillaDb.statMgr().countRecordUpdates(data.tableName(), count);
+		return count;
+	}
+
+	public int ExplainExecuteInsert(InsertData data, Transaction tx) {
+		Plan p = new TablePlan(data.tableName(), tx);
+        p = new ExplainPlan(p, tx);
+		UpdateScan us = (UpdateScan) p.open();
+		us.insert();
+		Iterator<Constant> iter = data.vals().iterator();
+		for (String fldname : data.fields())
+			us.setVal(fldname, iter.next());
+
+		us.close();
+		
+		VanillaDb.statMgr().countRecordUpdates(data.tableName(), 1);
+		return 1;
 	}
 }

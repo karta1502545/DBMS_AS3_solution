@@ -35,12 +35,12 @@ import org.vanilladb.core.storage.tx.Transaction;
  * @author sciore
  */
 public class Planner {
-	private As3QueryPlanner qPlanner;
-	private As3UpdatePlanner uPlanner;
+	private QueryPlanner qPlanner;
+	private UpdatePlanner uPlanner;
 
 	public Planner(QueryPlanner qPlanner, UpdatePlanner uPlanner) {
-		this.qPlanner = (As3QueryPlanner) qPlanner;
-		this.uPlanner = (As3UpdatePlanner) uPlanner;
+		this.qPlanner = qPlanner;
+		this.uPlanner = uPlanner;
 	}
 
 	/**

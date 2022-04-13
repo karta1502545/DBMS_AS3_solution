@@ -34,4 +34,6 @@ public interface QueryPlanner {
 	 * @return a plan for that query
 	 */
 	Plan createPlan(QueryData data, Transaction tx);
+
+	Plan ExplainCreatePlan(QueryData data, Transaction tx);
 }
