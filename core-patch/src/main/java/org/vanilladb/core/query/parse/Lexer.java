@@ -159,11 +159,13 @@ public class Lexer {
 	 * @param keyword
 	 *            the keyword string
 	 */
-	public void eatKeyword(String keyword) {
-		if (!matchKeyword(keyword))
-			throw new BadSyntaxException();
-		nextToken();
+public void eatKeyword(String keyword) {
+	if (!matchKeyword(keyword)) {
+		System.out.println(keyword);
+		throw new BadSyntaxException();
 	}
+	nextToken();
+}
 
 	/**
 	 * Throws an exception if the current token is not an identifier. Otherwise,

@@ -132,7 +132,7 @@ public class QueryData {
 	}
 
 	public String toString() {
-		StringBuilder result = new StringBuilder();;
+		StringBuilder result = new StringBuilder();
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");
@@ -165,4 +165,7 @@ public class QueryData {
 		}
 		return result.toString();
 	}
+	public boolean explainExist() {
+		return isExplain;
+		}
 }
