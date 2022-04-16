@@ -279,6 +279,10 @@ public class GroupByPlan extends ReduceRecordsPlan {
 				schema.addField(fn.fieldName(), t);
 			}
 		hist = groupByHistogram(p.histogram(), this.groupFlds, aggFns);
+		// System.out.println("(pseudo) GroupByPlan (#blks="+blocksAccessed()+", #recs="+recordsOutput()+")");
+		// System.out.println("(pseudo) tostring");
+		// System.out.println(toString());
+		// System.out.println("after groupby tostrng");
 	}
 
 	/**
@@ -335,6 +339,7 @@ public class GroupByPlan extends ReduceRecordsPlan {
 	@Override
 	public String toString() {
 		String c = sp.toString();
+		// System.out.println("string in gropuby"+c+"string aftergrob");
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");

@@ -227,6 +227,14 @@ public class Parser {
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
+		Set<String> explainFields = null;
+		
+		if (lex.matchKeyword("explain")) {
+			lex.eatKeyword("explain");
+			explainFields = new HashSet<String>();
+			explainFields.add("query-plan");
+		}
+
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
 		lex.eatKeyword("from");
@@ -260,8 +268,26 @@ public class Parser {
 			sortDirs = sortList.directionList();
 		}
 		return new QueryData(projs.asStringSet(), tables, pred,
-				groupFields, projs.aggregationFns(), sortFields, sortDirs);
+				groupFields, projs.aggregationFns(), sortFields, sortDirs, explainFields);
 	}
+
+	// /**
+	//  * Methods for explain
+	//  * @return CreateTableData
+	//  */
+	// public CreateTableData createExplainTempTable() {
+	// 	Schema sch = new Schema();
+	// 	sch.addField("query-plan", VARCHAR(500));
+	// 	return new CreateTableData("EXPLAIN_TEMP", sch);
+	// }
+
+	// /**
+	//  * Methods for explain
+	//  * @return DropTableData
+	//  */
+	// public DropTableData dropExplainTempTable() {
+	// 	return new DropTableData("EXPLAIN_TEMP");
+	// }
 
 	/*
 	 * Methods for parsing projection.

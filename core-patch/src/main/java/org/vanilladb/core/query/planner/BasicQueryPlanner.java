@@ -18,7 +18,7 @@ package org.vanilladb.core.query.planner;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.ProductPlan;
 import org.vanilladb.core.query.algebra.ProjectPlan;
@@ -41,7 +41,7 @@ public class BasicQueryPlanner implements QueryPlanner {
 	 * the field list.
 	 */
 	@Override
-	public Plan createPlan(QueryData data, Transaction tx) {
+	public Plan createPlan(QueryData data, Transaction tx) { // 類似遞迴一步步往上加
 		// Step 1: Create a plan for each mentioned table or view
 		List<Plan> plans = new ArrayList<Plan>();
 		for (String tblname : data.tables()) {
@@ -67,6 +67,11 @@ public class BasicQueryPlanner implements QueryPlanner {
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 
+		// Step 7: Create ExplainPlan if requested
+		// Plan exP = new ExplainPlan(p, data.explainFields());
+		if (data.explainFields() != null) {
+			p = new ExplainPlan(p, data.explainFields(), tx);
+		}
 		return p;
 	}
 }

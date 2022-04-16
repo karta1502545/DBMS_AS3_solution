@@ -77,6 +77,7 @@ public class SortPlan implements Plan {
 		comp = new RecordComparator(sortFlds, sortDirs);
 		this.tx = tx;
 		schema = p.schema();
+		// System.out.println("(pseudo) SortPlan (#blks="+blocksAccessed()+", #recs="+recordsOutput()+")");
 	}
 
 	/**
@@ -301,6 +302,7 @@ public class SortPlan implements Plan {
 	@Override
 	public String toString() {
 		String c = p.toString();
+		// System.out.println("string in sortplan"+c+"string aftersortplan");
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");
