@@ -120,6 +120,15 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 	}
 
 	@Override
+	public String getExplainString(int level) {
+		// repeat "\t" level times
+		String tabs = new String(new char[level]).replace("\0", "\t");
+		String result_string = tabs + String.format("->MergeJoinPlan (#blks=%d, #recs=%d)\n",
+				blocksAccessed(), recordsOutput());
+		return result_string + sp1.getExplainString(level + 1) + sp2.getExplainString(level + 1);
+	}
+
+	@Override
 	public String toString() {
 		String c2 = sp2.toString();
 		String[] cs2 = c2.split("\n");

@@ -377,5 +377,13 @@ public class SelectPlan extends ReduceRecordsPlan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String getExplainString(int level) {
+		// repeat "\t" level times
+		String tabs = new String(new char[level]).replace("\0", "\t");
+		return tabs + String.format("->SelectPlan pred:(%s) (#blks=%d, #recs=%d)\n",
+				pred.toString(), blocksAccessed(), recordsOutput()) + p.getExplainString(level+1);
+	}
+
 
 }

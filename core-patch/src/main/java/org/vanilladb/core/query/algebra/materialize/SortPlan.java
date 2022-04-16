@@ -47,7 +47,7 @@ public class SortPlan implements Plan {
 
 	/**
 	 * Creates a sort plan for the specified query.
-	 * 
+	 *
 	 * @param p
 	 *            the plan for the underlying query
 	 * @param sortFields
@@ -82,7 +82,7 @@ public class SortPlan implements Plan {
 	/**
 	 * This method is where most of the action is. Up to 2 sorted temporary
 	 * tables are created, and are passed into SortScan for final merging.
-	 * 
+	 *
 	 * @see Plan#open()
 	 */
 	@Override
@@ -105,7 +105,7 @@ public class SortPlan implements Plan {
 	 * Returns the number of blocks in the sorted table, which is the same as it
 	 * would be in a materialized table. It does <em>not</em> include the
 	 * one-time cost of materializing and sorting the records.
-	 * 
+	 *
 	 * @see Plan#blocksAccessed()
 	 */
 	@Override
@@ -118,7 +118,7 @@ public class SortPlan implements Plan {
 	/**
 	 * Returns the schema of the sorted table, which is the same as in the
 	 * underlying query.
-	 * 
+	 *
 	 * @see Plan#schema()
 	 */
 	@Override
@@ -129,7 +129,7 @@ public class SortPlan implements Plan {
 	/**
 	 * Returns the histogram that approximates the join distribution of the
 	 * field values of query results.
-	 * 
+	 *
 	 * @see Plan#histogram()
 	 */
 	@Override
@@ -140,6 +140,15 @@ public class SortPlan implements Plan {
 	@Override
 	public long recordsOutput() {
 		return p.recordsOutput();
+	}
+
+	@Override
+	public String getExplainString(int level) {
+		// repeat "\t" level times
+		String tabs = new String(new char[level]).replace("\0", "\t");
+		String result_string = tabs + String.format("->SortPlan (#blks=%d, #recs=%d)\n",
+                blocksAccessed(), recordsOutput());
+        return result_string + p.getExplainString(level + 1);
 	}
 
 	private List<TempTable> splitIntoRuns(Scan src) {
@@ -263,7 +272,7 @@ public class SortPlan implements Plan {
 		dest.close();
 		return result;
 	}
-	
+
 	private TempTable mergeTwoRuns(TempTable p1, TempTable p2) {
 		Scan src1 = p1.open();
 		Scan src2 = p2.open();
