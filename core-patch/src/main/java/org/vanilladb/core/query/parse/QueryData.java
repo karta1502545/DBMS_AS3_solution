@@ -35,6 +35,7 @@ public class QueryData {
 	private Set<AggregationFn> aggFn;
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
+	private boolean explain; // [AS3]
 
 	/**
 	 * Saves the information of a SQL query.
@@ -62,6 +63,30 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+		this.explain = false; // [AS3]
+	}
+	
+	/**
+	 * [AS3] Constructor for explain query
+	 * @param projFields
+	 * @param tables
+	 * @param pred
+	 * @param groupFields
+	 * @param aggFn
+	 * @param sortFields
+	 * @param sortDirs
+	 * @param explain
+	 */
+	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred, Set<String> groupFields,
+			Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs, boolean explain) {
+		this.projFields = projFields;
+		this.tables = tables;
+		this.pred = pred;
+		this.groupFields = groupFields;
+		this.aggFn = aggFn;
+		this.sortFields = sortFields;
+		this.sortDirs = sortDirs;
+		this.explain = explain;
 	}
 
 	/**
@@ -127,6 +152,13 @@ public class QueryData {
 	 */
 	public Set<AggregationFn> aggregationFn() {
 		return aggFn;
+	}
+	
+	/**
+	 * [AS3] Return if explain query is enabled
+	 */
+	public boolean isExplain() {
+		return explain;
 	}
 
 	public String toString() {
