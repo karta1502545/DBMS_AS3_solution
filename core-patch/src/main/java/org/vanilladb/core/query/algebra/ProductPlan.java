@@ -130,6 +130,26 @@ public class ProductPlan implements Plan {
 	}
 
 	/**
+	 * Returns the explain tree data with the estimated number of
+	 * blocks and records for each plan.
+	 *
+	 * @return the explain tree
+	 */
+	@Override
+	public ExplainTree explainTree() {
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), null, blks, recs);
+
+		ExplainTree c1 = p1.explainTree();
+		ExplainTree c2 = p2.explainTree();
+
+		et.addChild(c1);
+		et.addChild(c2);
+		return et;
+	}
+
+	/**
 	 * Returns an estimate of the number of records in the query's output table.
 	 * 
 	 * @see Plan#recordsOutput()
@@ -138,6 +158,7 @@ public class ProductPlan implements Plan {
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
 	}
+
 
 
 }

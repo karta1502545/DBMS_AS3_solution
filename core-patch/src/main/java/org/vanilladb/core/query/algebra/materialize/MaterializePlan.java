@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra.materialize;
 
+import org.vanilladb.core.query.algebra.ExplainTree;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.query.algebra.UpdateScan;
@@ -100,6 +101,22 @@ public class MaterializePlan implements Plan {
 	@Override
 	public Histogram histogram() {
 		return p.histogram();
+	}
+
+	/**
+	 * Returns the explain tree data with the estimated number of
+	 * blocks and records for each plan.
+	 *
+	 * @return the explain tree
+	 */
+	@Override
+	public ExplainTree explainTree() {
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), null, blks, recs);
+		ExplainTree child = p.explainTree();
+		et.addChild(child);
+		return et;
 	}
 
 	@Override

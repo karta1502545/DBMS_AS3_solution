@@ -92,6 +92,21 @@ public class TablePlan implements Plan {
 		return si.histogram();
 	}
 
+	/**
+	 * Returns the explain tree data with the estimated number of
+	 * blocks and records for each plan.
+	 *
+	 * @return the explain tree
+	 */
+	@Override
+	public ExplainTree explainTree() {
+		long blks = this.blocksAccessed();
+		long recs = this.recordsOutput();
+		String desc = "on (" + ti.tableName() +  ")";
+		ExplainTree et = new ExplainTree(this.getClass().getSimpleName(), desc, blks, recs);
+		return et;
+	}
+
 	@Override
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
