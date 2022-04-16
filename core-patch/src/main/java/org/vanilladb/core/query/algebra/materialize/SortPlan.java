@@ -300,15 +300,13 @@ public class SortPlan implements Plan {
 
 	@Override
 	public String toString() {
-		String c = p.toString();
-		String[] cs = c.split("\n");
-		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("SortPlan (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
-		for (String child : cs)
-			sb.append("\t").append(child).append("\n");
-		;
-		return sb.toString();
+		String[] stat = p.toString().split("\n");
+		StringBuilder result = new StringBuilder();
+		result.append("->SortPlan  (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
+
+		for (String s : stat)
+			result.append("\t" + s + "\n");
+
+		return result.toString();
 	}
 }

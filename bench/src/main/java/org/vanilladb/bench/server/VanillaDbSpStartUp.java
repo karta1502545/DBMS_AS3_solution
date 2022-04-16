@@ -32,7 +32,6 @@ public class VanillaDbSpStartUp implements SutStartUp {
 	public void startup(String[] args) {
 		if (logger.isLoggable(Level.INFO))
 			logger.info("initing...");
-		
 		VanillaDb.init(args[0], getStoredProcedureFactory());
 		
 		if (logger.isLoggable(Level.INFO))

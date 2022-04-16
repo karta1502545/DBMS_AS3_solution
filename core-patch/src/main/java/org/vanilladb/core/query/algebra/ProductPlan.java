@@ -79,6 +79,7 @@ public class ProductPlan implements Plan {
 		schema.addAll(p1.schema());
 		schema.addAll(p2.schema());
 		hist = productHistogram(p1.histogram(), p2.histogram());
+		toString();
 	}
 
 	/**
@@ -139,5 +140,21 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String toString() {
+		String[] stat1 = p1.toString().split("\n");
+		String[] stat2 = p2.toString().split("\n");
+		StringBuilder result = new StringBuilder();
+		result.append("->ProductPlan  (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
 
+		// right child
+		for (String s : stat2)
+			result.append("\t" + s + "\n");
+
+		// left child
+		for (String s : stat1)
+			result.append("\t" + s + "\n");
+
+		return result.toString();
+	}
 }

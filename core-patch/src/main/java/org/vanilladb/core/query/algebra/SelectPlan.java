@@ -377,5 +377,15 @@ public class SelectPlan extends ReduceRecordsPlan {
 		return (long) histogram().recordsOutput();
 	}
 
+	@Override
+	public String toString() {
+		String[] stat = p.toString().split("\n");
+		StringBuilder result = new StringBuilder();
+		result.append("->SelectPlan  (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
 
+		for (String s : stat)
+			result.append("\t" + s + "\n");
+
+		return result.toString();
+	}
 }
