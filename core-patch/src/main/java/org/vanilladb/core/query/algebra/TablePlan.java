@@ -98,4 +98,17 @@ public class TablePlan implements Plan {
 	}
 
 
+	/**
+	 * Returns explanation of the plan and its sub-plan
+	 *
+	 * @param level the indention level
+	 * @return explain
+	 */
+	@Override
+	public String generateExplanation(int level) {
+		String explanation = String.format("->TablePlan on (%s) (#blks=%d, #recs=%d)%n",
+				ti.tableName(), blocksAccessed(), recordsOutput());
+		explanation = new String(new char[level]).replace("\0", "  ") + explanation;
+		return explanation;
+	}
 }

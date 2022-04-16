@@ -35,6 +35,7 @@ public class QueryData {
 	private Set<AggregationFn> aggFn;
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
+	private boolean explain;
 
 	/**
 	 * Saves the information of a SQL query.
@@ -52,9 +53,13 @@ public class QueryData {
 	 *            a list of field names for sorting
 	 * @param sortDirs
 	 *            a list of sort directions
+	 * @param explain
+	 *            whether explain the query
 	 */
 	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
-			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs,
+			boolean explain) {
+
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -62,6 +67,7 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+		this.explain = explain;
 	}
 
 	/**
@@ -129,8 +135,15 @@ public class QueryData {
 		return aggFn;
 	}
 
+	public boolean getExplain() {
+		return explain;
+	}
+
 	public String toString() {
-		StringBuilder result = new StringBuilder();;
+		StringBuilder result = new StringBuilder();
+		if (explain) {
+			result.append("explain ");
+		}
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");

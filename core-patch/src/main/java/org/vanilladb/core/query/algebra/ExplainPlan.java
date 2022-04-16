@@ -16,51 +16,71 @@
 package org.vanilladb.core.query.algebra;
 
 import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
-/**
- * The interface implemented by each query plan. There is a Plan class for each
- * relational algebra operator.
- */
-public interface Plan {
+public class ExplainPlan implements Plan {
+
+	private final Plan p;
+	private final Schema schema;
+
+	public ExplainPlan(Plan p) {
+		this.p = p;
+		schema = new Schema();
+		schema.addField("query-plan", Type.VARCHAR(500));
+	}
 
 	/**
-	 * Opens a scan corresponding to this plan. The scan will be positioned
-	 * before its first record.
-	 * 
-	 * @return a scan
+	 * Creates an explain scan
+	 *
+	 * @return a explain scan
 	 */
-	Scan open();
+	@Override
+	public Scan open() {
+		return new ExplainScan(p, schema);
+	}
 
 	/**
 	 * Returns an estimate of the number of block accesses that will occur when
 	 * the scan is read to completion.
-	 * 
+	 *
 	 * @return the estimated number of block accesses
 	 */
-	long blocksAccessed();
+	@Override
+	public long blocksAccessed() {
+		return p.blocksAccessed();
+	}
 
 	/**
 	 * Returns the schema of the query.
-	 * 
+	 *
 	 * @return the query's schema
 	 */
-	Schema schema();
+	@Override
+	public Schema schema() {
+		return schema;
+	}
 
 	/**
 	 * Returns the histogram that approximates the join distribution of the
 	 * field values of query results.
-	 * 
+	 *
 	 * @return the histogram
 	 */
-	Histogram histogram();
+	@Override
+	public Histogram histogram() {
+		return p.histogram(); // TODO: is this correct?
+	}
 
 	/**
 	 * Returns an estimate of the number of records in the query's output table.
-	 * 
+	 *
 	 * @return the estimated number of output records
 	 */
-	long recordsOutput();
+	@Override
+	public long recordsOutput() {
+		return 1;
+	}
 
 	/**
 	 * Returns explanation of the plan and its sub-plan
@@ -68,5 +88,11 @@ public interface Plan {
 	 * @param level the indention level
 	 * @return explain
 	 */
-	String generateExplanation(int level);
+	@Override
+	public String generateExplanation(int level) {
+//		String explanation = String.format("ExplainPlan (#blks=%d, #recs=%d)%n", blocksAccessed(), recordsOutput());
+//		explanation += p.generateExplanation(level + 1);
+		return p.generateExplanation(level);
+	}
+
 }

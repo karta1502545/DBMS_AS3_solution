@@ -377,5 +377,19 @@ public class SelectPlan extends ReduceRecordsPlan {
 		return (long) histogram().recordsOutput();
 	}
 
+	/**
+	 * Returns explanation of the plan and its sub-plan
+	 *
+	 * @param level the indention level
+	 * @return explain
+	 */
+	@Override
+	public String generateExplanation(int level) {
+		String explanation = String.format("->SelectPlan pred:(%s) (#blks=%d, #recs=%d)%n",
+				pred.toString(), blocksAccessed(), recordsOutput());
+		explanation = new String(new char[level]).replace("\0", "  ") + explanation;
+		explanation += p.generateExplanation(level + 1);
+		return explanation;
+	}
 
 }

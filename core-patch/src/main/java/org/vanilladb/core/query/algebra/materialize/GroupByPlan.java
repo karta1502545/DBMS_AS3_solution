@@ -345,4 +345,18 @@ public class GroupByPlan extends ReduceRecordsPlan {
 		;
 		return sb.toString();
 	}
+
+	/**
+	 * Returns explanation of the plan and its sub-plan
+	 *
+	 * @param level the indention level
+	 * @return explain
+	 */
+	@Override
+	public String generateExplanation(int level) {
+		String explanation = String.format("->GroupByPlan (#blks=%d, #recs=%d)%n", blocksAccessed(), recordsOutput());
+		explanation = new String(new char[level]).replace("\0", "  ") + explanation;
+		explanation += sp.generateExplanation(level + 1);
+		return explanation;
+	}
 }
