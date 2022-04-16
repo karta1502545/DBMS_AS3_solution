@@ -139,4 +139,33 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 		;
 		return sb.toString();
 	}
+	
+	
+	@Override
+	public String recordData()
+	{
+		String subQueryLeft = sp1.recordData();
+		String subQueryRight = sp2.recordData();
+		
+		String r = "->MergeJoinPlan  (#blks=" + blocksAccessed();
+		r += ", #recs="+recordsOutput() + ")\n";
+		
+		String tmpLeft[] = subQueryLeft.split("\n");
+		for(String s : tmpLeft)
+		{
+			r += "   ";
+			r += s;
+			r += "\n";
+		}
+		String tmpRight[] = subQueryLeft.split("\n");
+		for(String s : tmpRight)
+		{
+			r += "   ";
+			r += s;
+			r += "\n";
+		}
+		
+		
+		return r;
+	}
 }

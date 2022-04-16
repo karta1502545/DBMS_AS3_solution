@@ -139,5 +139,33 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
+	
+	@Override
+	public String recordData()
+	{
+		String subQueryLeft = p1.recordData();
+		String subQueryRight = p2.recordData();
+		
+		
+		String r = "->ProductPlan  (#blks=" + blocksAccessed();
+		r += ", #recs="+recordsOutput() + ")\n";
+		
+		String tmpLeft[] = subQueryLeft.split("\n");
+		for(String s : tmpLeft)
+		{
+			r += "   ";
+			r += s;
+			r += "\n";
+		}
+		String tmpRight[] = subQueryRight.split("\n");
+		for(String s : tmpRight)
+		{
+			r += "   ";
+			r += s;
+			r += "\n";
+		}
+		
+		return r;
+	}
 
 }
