@@ -24,10 +24,14 @@ import org.vanilladb.core.query.algebra.ProductPlan;
 import org.vanilladb.core.query.algebra.ProjectPlan;
 import org.vanilladb.core.query.algebra.SelectPlan;
 import org.vanilladb.core.query.algebra.TablePlan;
+import org.vanilladb.core.query.algebra.UpdateScan;
 import org.vanilladb.core.query.algebra.materialize.GroupByPlan;
 import org.vanilladb.core.query.algebra.materialize.SortPlan;
+import org.vanilladb.core.query.algebra.materialize.ExplainPlan;
 import org.vanilladb.core.query.parse.QueryData;
 import org.vanilladb.core.server.VanillaDb;
+import org.vanilladb.core.sql.Constant;
+import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.storage.tx.Transaction;
 
 /**
@@ -43,30 +47,61 @@ public class BasicQueryPlanner implements QueryPlanner {
 	@Override
 	public Plan createPlan(QueryData data, Transaction tx) {
 		// Step 1: Create a plan for each mentioned table or view
+		String xStr = "";
+		
 		List<Plan> plans = new ArrayList<Plan>();
 		for (String tblname : data.tables()) {
 			String viewdef = VanillaDb.catalogMgr().getViewDef(tblname, tx);
-			if (viewdef != null)
+			if (viewdef != null) 
 				plans.add(VanillaDb.newPlanner().createQueryPlan(viewdef, tx));
-			else
-				plans.add(new TablePlan(tblname, tx));
+			else {
+				Plan tp = new TablePlan(tblname, tx);
+				plans.add(tp);
+				xStr = "->TablePlan on (" + tblname + ")" + "(#blks= " + tp.blocksAccessed() +", #recs=" + tp.recordsOutput() + ")" + xStr;
+				xStr = "\n" + xStr;
+			}
 		}
 		// Step 2: Create the product of all table plans
+		
 		Plan p = plans.remove(0);
-		for (Plan nextplan : plans)
+		
+		xStr = xStr.replace("\n", "\n\t");
+		
+		for (Plan nextplan : plans) {
 			p = new ProductPlan(p, nextplan);
+			xStr = "\n->ProductPlan (#blks= " + p.blocksAccessed() +", #recs=" + p.recordsOutput() + ")" + xStr;
+		}
 		// Step 3: Add a selection plan for the predicate
 		p = new SelectPlan(p, data.pred());
+		xStr = xStr.replace("\n", "\n\t\t");
+		xStr = "\n\t->SelectPlan pred:(" + data.pred().toString() + ") (#blks=" + p.blocksAccessed() + ", #recs=" + p.recordsOutput() + ")" + xStr;
+		
 		// Step 4: Add a group-by plan if specified
+		String sStr = "";
+		String gbStr = "";
 		if (data.groupFields() != null) {
+			xStr = xStr.replace("\n", "\n\t");
 			p = new GroupByPlan(p, data.groupFields(), data.aggregationFn(), tx);
+			gbStr = "\n\t->GroupByPlan: (#blks=" + p.blocksAccessed() + ", #recs=" + p.recordsOutput() + ")";
+			Plan sp = new SortPlan(p, new ArrayList<String>(data.groupFields()), tx);
+			sStr = "\n\t\t->SortPlan: (#blks=" + p.blocksAccessed() + ", #recs=" + p.recordsOutput() + ")";		
+			xStr = xStr.replace("\n", "\n\t");
 		}
 		// Step 5: Project onto the specified fields
 		p = new ProjectPlan(p, data.projectFields());
+		String pStr = "\n->ProjectPlan: (#blks=" + p.blocksAccessed() + ", #recs=" + p.recordsOutput() + ")";
+		String rec = "\nActual #recs: " + p.recordsOutput();
 		// Step 6: Add a sort plan if specified
-		if (data.sortFields() != null)
+		if (data.sortFields() != null) {
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
-
-		return p;
+			if (data.groupFields() == null) {
+				sStr = "\n\t->SortPlan: (#blks=" + p.blocksAccessed() + ", #recs=" + p.recordsOutput() + ")";
+				xStr = xStr.replace("\n", "\n\t");
+			}
+		}
+		xStr = pStr + gbStr + sStr + xStr + rec;
+//		System.out.print(xStr);
+		ExplainPlan xP = new ExplainPlan(tx, xStr);
+		return data.explain() ? xP : p;
 	}
 }

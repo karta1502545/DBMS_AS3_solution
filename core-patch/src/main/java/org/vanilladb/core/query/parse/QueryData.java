@@ -28,6 +28,7 @@ import org.vanilladb.core.sql.predicate.Predicate;
  * Data for the SQL <em>select</em> statements.
  */
 public class QueryData {
+	private boolean expl = false;
 	private Set<String> projFields;
 	private Set<String> tables;
 	private Predicate pred;
@@ -53,8 +54,9 @@ public class QueryData {
 	 * @param sortDirs
 	 *            a list of sort directions
 	 */
-	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
+	public QueryData(boolean expl, Set<String> projFields, Set<String> tables, Predicate pred,
 			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+		this.expl = expl;
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -62,6 +64,10 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+	}
+	
+	public boolean explain() {
+		return expl;
 	}
 
 	/**
