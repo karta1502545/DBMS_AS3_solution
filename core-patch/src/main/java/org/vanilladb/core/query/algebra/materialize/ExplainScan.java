@@ -13,20 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.core.query.algebra;
+package org.vanilladb.core.query.algebra.materialize;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.vanilladb.core.sql.VarcharConstant;
+import org.vanilladb.core.query.algebra.Scan;
+import org.vanilladb.core.query.algebra.UpdateScan;
+import org.vanilladb.core.sql.Constant;
+import org.vanilladb.core.sql.RecordComparator;
+import org.vanilladb.core.storage.record.RecordId;
 import java.util.Collection;
 
-import org.vanilladb.core.sql.Constant;
-
 /**
- * The scan class corresponding to the <em>project</em> relational algebra
- * operator. All methods except hasField delegate their work to the underlying
- * scan.
+ * The Scan class for the <em>sort</em> operator.
+ * 
  */
-public class ProjectScan implements Scan {
+public class ExplainScan implements Scan {
 	private Scan s;
 	private Collection<String> fieldList;
+
+	// [mod] add firstnext flag
+	private Boolean firstNext;
+	private String explainString;
 
 	/**
 	 * Creates a project scan having the specified underlying scan and field
@@ -37,9 +47,11 @@ public class ProjectScan implements Scan {
 	 * @param fieldList
 	 *                  the list of field names
 	 */
-	public ProjectScan(Scan s, Collection<String> fieldList) {
+	public ExplainScan(Scan s, Collection<String> fieldList, String explainString) {
 		this.s = s;
 		this.fieldList = fieldList;
+		this.firstNext = true;
+		this.explainString = explainString;
 	}
 
 	@Override
@@ -49,7 +61,11 @@ public class ProjectScan implements Scan {
 
 	@Override
 	public boolean next() {
-		return s.next();
+		if(firstNext){
+			firstNext = false;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -60,7 +76,7 @@ public class ProjectScan implements Scan {
 	@Override
 	public Constant getVal(String fldName) {
 		if (hasField(fldName))
-			return s.getVal(fldName);
+			return new VarcharConstant(explainString);
 		else
 			throw new RuntimeException("field " + fldName + " not found.");
 	}
@@ -74,5 +90,4 @@ public class ProjectScan implements Scan {
 	public boolean hasField(String fldName) {
 		return fieldList.contains(fldName);
 	}
-
 }

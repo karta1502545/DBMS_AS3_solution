@@ -69,10 +69,15 @@ public class ConsoleSQLInterpreter {
 
 	private static void doQuery(String cmd,String cmdf) {
 		try {
+			// System.out.print("1");
 			Statement stmt = conn.createStatement();
+			// System.out.print("2");
 			ResultSet rs = stmt.executeQuery(cmd);
+			// System.out.print("3");
 			ResultSetMetaData md = rs.getMetaData();
+			// System.out.print("4");
 			int numcols = md.getColumnCount();
+			// System.out.print("5");
 			int totalwidth = 0;
 
 			// print header
@@ -80,8 +85,11 @@ public class ConsoleSQLInterpreter {
 				int width = md.getColumnDisplaySize(i);
 				totalwidth += width;
 				String fmt = "%" + width + "s";
-				if (cmdf.startsWith("EXPLAIN"))
+				// System.out.print("yes");
+				if (cmdf.startsWith("EXPLAIN")){
+					// System.out.print("no");
 					System.out.format("%s", md.getColumnName(i));
+				}
 				else
 					System.out.format(fmt, md.getColumnName(i));
 			}

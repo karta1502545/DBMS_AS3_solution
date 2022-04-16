@@ -35,26 +35,30 @@ public class QueryData {
 	private Set<AggregationFn> aggFn;
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
+	private Boolean isExplain;
 
 	/**
 	 * Saves the information of a SQL query.
+	 * 
 	 * @param projFields
-	 *            a collection of field names
+	 *                    a collection of field names
 	 * @param tables
-	 *            a collection of table names
+	 *                    a collection of table names
 	 * @param pred
-	 *            the query predicate
+	 *                    the query predicate
 	 * @param groupFields
-	 *            a collection of grouping field names
+	 *                    a collection of grouping field names
 	 * @param aggFn
-	 *            a collection of aggregation functions
+	 *                    a collection of aggregation functions
 	 * @param sortFields
-	 *            a list of field names for sorting
+	 *                    a list of field names for sorting
 	 * @param sortDirs
-	 *            a list of sort directions
+	 *                    a list of sort directions
+	 * @param isExplain
 	 */
 	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
-			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs,
+			Boolean isExplain) {
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -62,6 +66,7 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+		this.isExplain = isExplain;
 	}
 
 	/**
@@ -129,8 +134,16 @@ public class QueryData {
 		return aggFn;
 	}
 
+	// [Mod]
+	public Boolean isExplain() {
+		return isExplain;
+	}
+
 	public String toString() {
-		StringBuilder result = new StringBuilder();;
+		StringBuilder result = new StringBuilder();
+		// [mod] add explain
+		if(isExplain)
+			result.append("explain ");
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");

@@ -32,9 +32,9 @@ public class ProductPlan implements Plan {
 	 * distribution of products from the specified histograms.
 	 * 
 	 * @param hist1
-	 *            the left-hand-side histogram
+	 *              the left-hand-side histogram
 	 * @param hist2
-	 *            the right-hand-side histogram
+	 *              the right-hand-side histogram
 	 * @return a histogram that, for each field, approximates the value
 	 *         distribution of the products
 	 */
@@ -69,9 +69,9 @@ public class ProductPlan implements Plan {
 	 * subqueries.
 	 * 
 	 * @param p1
-	 *            the left-hand subquery
+	 *           the left-hand subquery
 	 * @param p2
-	 *            the right-hand subquery
+	 *           the right-hand subquery
 	 */
 	public ProductPlan(Plan p1, Plan p2) {
 		this.p1 = p1;
@@ -139,5 +139,23 @@ public class ProductPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	// [mod] add toString
+	@Override
+	public String toString() {
+		String c1 = p1.toString();
+		String[] cs1 = c1.split("\n");
+		String c2 = p2.toString();
+		String[] cs2 = c2.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("ProductPlan (#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		for (String child : cs1)
+			sb.append("\t").append(child).append("\n");
+		;
+		for (String child : cs2)
+			sb.append("\t").append(child).append("\n");
+		;
+		return sb.toString();
+	}
 }
