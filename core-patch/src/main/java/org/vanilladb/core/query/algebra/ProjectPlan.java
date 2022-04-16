@@ -112,5 +112,26 @@ public class ProjectPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	@Override
+	public String toString() {
+		String c = p.toString();
+		String[] cs = c.split("\n");
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("ProjectPlan (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
+		for (String child : cs)
+			sb.append("\t").append(child).append("\n");
+		return sb.toString();
+	}	
+	
+//	@Override
+//	public String explainOutput() {
+//		String ans = "";
+//		// ->ProjectPlan  (#blks=2, #recs=1)
+//		String format = "-> ProjectPlan (#blks=%d, #recs=%d)";
+//		long blks = blocksAccessed();
+//		long recs = recordsOutput();
+//		ans = String.format(format, blks, recs);
+//		return ans;
+//	}
 }

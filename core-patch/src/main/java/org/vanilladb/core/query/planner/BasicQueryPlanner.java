@@ -30,6 +30,9 @@ import org.vanilladb.core.query.parse.QueryData;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.storage.tx.Transaction;
 
+// import ExplainPlan
+import org.vanilladb.core.query.algebra.ExplainPlan;
+
 /**
  * The simplest, most naive query planner possible.
  */
@@ -67,6 +70,11 @@ public class BasicQueryPlanner implements QueryPlanner {
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 
+		// Step7 : Explain plan
+		if(data.isExplain()==true) {
+			
+			p = new ExplainPlan(p, data.explainFields());
+		}
 		return p;
 	}
 }
