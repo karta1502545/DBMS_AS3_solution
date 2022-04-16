@@ -338,11 +338,11 @@ public class GroupByPlan extends ReduceRecordsPlan {
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
 		sb.append("->");
-		sb.append("GroupByPlan: (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
+		sb.append(this.getClass().getSimpleName() +
+				" (#blks=" + blocksAccessed() +
+				", #recs=" + recordsOutput() + ")\n");
 		for (String child : cs)
 			sb.append("\t").append(child).append("\n");
-		;
 		return sb.toString();
 	}
 }

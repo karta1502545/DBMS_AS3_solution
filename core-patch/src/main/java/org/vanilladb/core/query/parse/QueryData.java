@@ -28,6 +28,7 @@ import org.vanilladb.core.sql.predicate.Predicate;
  * Data for the SQL <em>select</em> statements.
  */
 public class QueryData {
+	private boolean isExplain;
 	private Set<String> projFields;
 	private Set<String> tables;
 	private Predicate pred;
@@ -53,8 +54,9 @@ public class QueryData {
 	 * @param sortDirs
 	 *            a list of sort directions
 	 */
-	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
+	public QueryData(boolean isExplain, Set<String> projFields, Set<String> tables, Predicate pred,
 			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+		this.isExplain = isExplain ;
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -64,6 +66,15 @@ public class QueryData {
 		this.sortDirs = sortDirs;
 	}
 
+	/**
+	 * Returns whether this is a "explain" query
+	 * 
+	 * @return true/false
+	 */
+	public boolean isExplainQuery() {
+		return isExplain;
+	}
+	
 	/**
 	 * Returns the fields mentioned in the select clause.
 	 * 
@@ -130,7 +141,8 @@ public class QueryData {
 	}
 
 	public String toString() {
-		StringBuilder result = new StringBuilder();;
+		StringBuilder result = new StringBuilder();
+		if (isExplain) result.append("explain ");
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");
