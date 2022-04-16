@@ -46,7 +46,7 @@ public class ConsoleSQLInterpreter {
 				System.out.println();
 
 				String [] str = cmd.split(" ");
-				String cmdf = str[0].toUpperCase();	
+				String cmdf = str[0].toUpperCase();
 
 				if (cmd.startsWith("exit") || cmd.startsWith("EXIT"))
 					break;

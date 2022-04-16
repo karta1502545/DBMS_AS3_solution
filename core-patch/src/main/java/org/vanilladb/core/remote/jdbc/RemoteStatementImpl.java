@@ -35,11 +35,12 @@ class RemoteStatementImpl extends UnicastRemoteObject implements
 		this.rconn = rconn;
 	}
 
+
 	/**
 	 * Executes the specified SQL query string. The method calls the query
 	 * planner to create a plan for the query. It then sends the plan to the
 	 * RemoteResultSetImpl constructor for processing.
-	 * 
+	 *
 	 * @see RemoteStatement#executeQuery(java.lang.String)
 	 */
 	@Override
@@ -57,7 +58,7 @@ class RemoteStatementImpl extends UnicastRemoteObject implements
 	/**
 	 * Executes the specified SQL update command. The method sends the command
 	 * to the update planner, which executes it.
-	 * 
+	 *
 	 * @see RemoteStatement#executeUpdate(java.lang.String)
 	 */
 	@Override

@@ -15,70 +15,54 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
-import java.util.Set;
-
 import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 /**
- * The {@link Plan} class corresponding to the <em>project</em> relational
+ * The {@link Plan} class corresponding to the <em>explain</em> relational
  * algebra operator.
  */
-public class ProjectPlan implements Plan {
-	/**
-	 * Returns a histogram that approximates the join frequency distribution of
-	 * the projected values from the specified histograms onto the specified
-	 * fields.
-	 * 
-	 * @param hist
-	 *            the input join distribution of field values
-	 * @param fldNames
-	 *            the names of fields to project to
-	 * @return join distribution of projected values
-	 */
-	public static Histogram projectHistogram(Histogram hist,
-			Set<String> fldNames) {
-		Histogram pjtHist = new Histogram(fldNames);
-		for (String fld : fldNames)
-			pjtHist.setBuckets(fld, hist.buckets(fld));
-		return pjtHist;
-	}
-
+public class ExplainPlan implements Plan {
 	private Plan p;
 	private Schema schema = new Schema();
 	private Histogram hist;
+	private int ac;
 
 	/**
 	 * Creates a new project node in the query tree, having the specified
 	 * subquery and field list.
-	 * 
+	 *
 	 * @param p
 	 *            the subquery
 	 * @param fldNames
 	 *            the list of fields
 	 */
-	public ProjectPlan(Plan p, Set<String> fldNames) {
+	public ExplainPlan(Plan p) {
 		this.p = p;
-		for (String fldname : fldNames)
-			schema.add(fldname, p.schema());
-		hist = projectHistogram(p.histogram(), fldNames);
+		this.ac = 0;
+		schema.addField("query-plan", Type.VARCHAR(500));
 	}
 
 	/**
 	 * Creates a project scan for this query.
-	 * 
+	 *
 	 * @see Plan#open()
 	 */
 	@Override
 	public Scan open() {
 		Scan s = p.open();
-		return new ProjectScan(s, schema.fields());
+		s.beforeFirst();
+		while(s.next()) {
+			this.ac++;
+		}
+		return new ExplainScan(s, this.toString(), schema.fields());
 	}
 
 	/**
 	 * Estimates the number of block accesses in the projection, which is the
 	 * same as in the underlying query.
-	 * 
+	 *
 	 * @see Plan#blocksAccessed()
 	 */
 	@Override
@@ -88,7 +72,7 @@ public class ProjectPlan implements Plan {
 
 	/**
 	 * Returns the schema of the projection, which is taken from the field list.
-	 * 
+	 *
 	 * @see Plan#schema()
 	 */
 	@Override
@@ -99,7 +83,7 @@ public class ProjectPlan implements Plan {
 	/**
 	 * Returns the histogram that approximates the join distribution of the
 	 * field values of query results.
-	 * 
+	 *
 	 * @see Plan#histogram()
 	 */
 	@Override
@@ -112,16 +96,13 @@ public class ProjectPlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 		String c = p.toString();
-		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("ProjectPlan  (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
-		for (String child : cs)
-			sb.append("\t").append(child).append("\n");
-		return sb.toString();
-	}
+		sb.append("\n");
+		sb.append(c);
+		sb.append("\nActual #recs: " + this.ac+ "\n");
+        return sb.toString();
+    }
 }
