@@ -26,6 +26,7 @@ import org.vanilladb.core.query.algebra.SelectPlan;
 import org.vanilladb.core.query.algebra.TablePlan;
 import org.vanilladb.core.query.algebra.materialize.GroupByPlan;
 import org.vanilladb.core.query.algebra.materialize.SortPlan;
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.parse.QueryData;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.storage.tx.Transaction;
@@ -67,6 +68,10 @@ public class BasicQueryPlanner implements QueryPlanner {
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
 
+		// Step 7: Add explain plan
+		if(data.get_isExplain()){
+			p = new ExplainPlan(p);
+		}
 		return p;
 	}
 }
