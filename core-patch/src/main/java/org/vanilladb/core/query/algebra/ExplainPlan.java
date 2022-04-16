@@ -13,72 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-//AS3: Sheep Modified
+//AS3: Sheep Added
 package org.vanilladb.core.query.algebra;
 
-import java.util.Set;
+import static org.vanilladb.core.sql.Type.VARCHAR;
 
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
 /**
- * The {@link Plan} class corresponding to the <em>project</em> relational
+ * The {@link Plan} class corresponding to the <em>explain</em> relational
  * algebra operator.
  */
-public class ProjectPlan implements Plan {
+public class ExplainPlan implements Plan {
 	/**
-	 * Returns a histogram that approximates the join frequency distribution of
-	 * the projected values from the specified histograms onto the specified
-	 * fields.
+	 * Returns a histogram that, for each field, approximates the value
+	 * distribution of products from the specified histograms.
 	 * 
-	 * @param hist
-	 *            the input join distribution of field values
-	 * @param fldNames
-	 *            the names of fields to project to
-	 * @return join distribution of projected values
+	 * @return a histogram that, for each field, approximates the value
+	 *         distribution of the products
 	 */
-	public static Histogram projectHistogram(Histogram hist,
-			Set<String> fldNames) {
-		Histogram pjtHist = new Histogram(fldNames);
-		for (String fld : fldNames)
-			pjtHist.setBuckets(fld, hist.buckets(fld));
-		return pjtHist;
-	}
 
 	private Plan p;
 	private Schema schema = new Schema();
-	private Histogram hist;
 
 	/**
-	 * Creates a new project node in the query tree, having the specified
-	 * subquery and field list.
+	 * Creates a new product node in the query tree, having the two specified
+	 * subqueries.
 	 * 
 	 * @param p
-	 *            the subquery
-	 * @param fldNames
-	 *            the list of fields
+	 *            the left-hand subquery
 	 */
-	public ProjectPlan(Plan p, Set<String> fldNames) {
+	public ExplainPlan(Plan p) {
 		this.p = p;
-		for (String fldname : fldNames)
-			schema.add(fldname, p.schema());
-		hist = projectHistogram(p.histogram(), fldNames);
+		schema.addField("query-plan", VARCHAR);
 	}
 
 	/**
-	 * Creates a project scan for this query.
+	 * Creates a product scan for this query.
 	 * 
 	 * @see Plan#open()
 	 */
 	@Override
 	public Scan open() {
-		Scan s = p.open();
-		return new ProjectScan(s, schema.fields());
+		return new ExplainScan(this.toString());
 	}
 
 	/**
-	 * Estimates the number of block accesses in the projection, which is the
-	 * same as in the underlying query.
+	 * Estimates the number of block accesses in the explain. The formula is:
+	 * 
+	 * <pre>
+	 * B(explain(p1) = B(p1)
+	 * </pre>
 	 * 
 	 * @see Plan#blocksAccessed()
 	 */
@@ -88,7 +74,8 @@ public class ProjectPlan implements Plan {
 	}
 
 	/**
-	 * Returns the schema of the projection, which is taken from the field list.
+	 * Returns the schema of the explain, which is the union of the schemas of
+	 * the underlying queries.
 	 * 
 	 * @see Plan#schema()
 	 */
@@ -105,25 +92,28 @@ public class ProjectPlan implements Plan {
 	 */
 	@Override
 	public Histogram histogram() {
-		return hist;
+		return p.histogram();
+	}
+
+	/**
+	 * Returns an estimate of the number of records in the query's output table.
+	 * 
+	 * @see Plan#recordsOutput()
+	 */
+	@Override
+	public long recordsOutput() {
+		return p.recordsOutput();
 	}
 
 	@Override
-	public long recordsOutput() {
-		return (long) histogram().recordsOutput();
-	}
-
-	@Override //add
 	public String toString() {
 		String c = p.toString();
 		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("ProjectPlan: (#blks=" + blocksAccessed() + ", #recs="
-				+ recordsOutput() + ")\n");
+		sb.append("-----------------------------------------------------------\n");
 		for (String child : cs)
-			sb.append("\t").append(child).append("\n");
-		;
+			sb.append(child).append("\n");
+		sb.append("Actual #recs: " + String.valueOf(recordsOutput()));
 		return sb.toString();
 	}
 }

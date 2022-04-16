@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.core.query.algebra;
+//AS3: Sheep Modified
+ package org.vanilladb.core.query.algebra;
 
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.Schema;
@@ -30,6 +31,7 @@ public class TablePlan implements Plan {
 	private Transaction tx;
 	private TableInfo ti;
 	private TableStatInfo si;
+	private String tblName;
 
 	/**
 	 * Creates a leaf node in the query tree corresponding to the specified
@@ -41,6 +43,7 @@ public class TablePlan implements Plan {
 	 *            the calling transaction
 	 */
 	public TablePlan(String tblName, Transaction tx) {
+		this.tblName = tblName;
 		this.tx = tx;
 		ti = VanillaDb.catalogMgr().getTableInfo(tblName, tx);
 		if (ti == null)
@@ -97,5 +100,12 @@ public class TablePlan implements Plan {
 		return (long) histogram().recordsOutput();
 	}
 
-
+	@Override //add
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("->");
+		sb.append("TablePlan: on ("+ tblName +") (#blks=" + blocksAccessed() + ", #recs="
+				+ recordsOutput() + ")\n");
+		return sb.toString();
+	}
 }

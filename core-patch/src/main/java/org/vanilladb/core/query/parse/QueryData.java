@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
+//AS3: Sheep Modified
 package org.vanilladb.core.query.parse;
 
 import static org.vanilladb.core.sql.RecordComparator.DIR_DESC;
@@ -35,6 +36,7 @@ public class QueryData {
 	private Set<AggregationFn> aggFn;
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
+	private Boolean isExplain;
 
 	/**
 	 * Saves the information of a SQL query.
@@ -52,9 +54,11 @@ public class QueryData {
 	 *            a list of field names for sorting
 	 * @param sortDirs
 	 *            a list of sort directions
+	 * @param isExplain
+	 * 			  a flag to show whether "ExplainPlan" is specified
 	 */
 	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
-			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs, Boolean isExplain) {
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -62,6 +66,7 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
+		this.isExplain = isExplain;
 	}
 
 	/**
@@ -128,9 +133,22 @@ public class QueryData {
 	public Set<AggregationFn> aggregationFn() {
 		return aggFn;
 	}
+	
+	/**
+	 * Returns the flag of "explain" mentioned in the clause.
+	 * 
+	 * @return a flag of "explain"
+	 */
+	public Boolean isExplain() {
+		return isExplain;
+	}
 
 	public String toString() {
 		StringBuilder result = new StringBuilder();;
+
+		if (isExplain) // sheep add 
+			result.append("explain "); 
+
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");

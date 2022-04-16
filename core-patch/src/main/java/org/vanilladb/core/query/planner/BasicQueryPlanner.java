@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.core.query.planner;
+//AS3: Sheep Modified
+ package org.vanilladb.core.query.planner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.vanilladb.core.query.algebra.ProductPlan;
 import org.vanilladb.core.query.algebra.ProjectPlan;
 import org.vanilladb.core.query.algebra.SelectPlan;
 import org.vanilladb.core.query.algebra.TablePlan;
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.materialize.GroupByPlan;
 import org.vanilladb.core.query.algebra.materialize.SortPlan;
 import org.vanilladb.core.query.parse.QueryData;
@@ -58,15 +60,16 @@ public class BasicQueryPlanner implements QueryPlanner {
 		// Step 3: Add a selection plan for the predicate
 		p = new SelectPlan(p, data.pred());
 		// Step 4: Add a group-by plan if specified
-		if (data.groupFields() != null) {
+		if (data.groupFields() != null)
 			p = new GroupByPlan(p, data.groupFields(), data.aggregationFn(), tx);
-		}
 		// Step 5: Project onto the specified fields
 		p = new ProjectPlan(p, data.projectFields());
 		// Step 6: Add a sort plan if specified
 		if (data.sortFields() != null)
 			p = new SortPlan(p, data.sortFields(), data.sortDirections(), tx);
-
+		//Step 7: Add an explain plan if specified 
+		if(data.isExplain())
+			p = new ExplainPlan(p);
 		return p;
 	}
 }

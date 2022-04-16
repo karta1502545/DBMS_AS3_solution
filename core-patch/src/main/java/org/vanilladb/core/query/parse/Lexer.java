@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
+//AS3: Sheep Modified
 package org.vanilladb.core.query.parse;
 
 import java.io.IOException;
@@ -186,9 +187,9 @@ public class Lexer {
 			throw new BadSyntaxException();
 		}
 	}
-
+	//Sheep: Add keyword "explain"
 	private void initKeywords() {
-		keywords = Arrays.asList("select", "from", "where", "and", "insert",
+		keywords = Arrays.asList("explain", "select", "from", "where", "and", "insert",
 				"into", "values", "delete", "drop", "update", "set", "create", "table",
 				"int", "double", "varchar", "view", "as", "index", "on",
 				"long", "order", "by", "asc", "desc", "sum", "count", "avg",
