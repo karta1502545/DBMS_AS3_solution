@@ -26,6 +26,8 @@ public class MergeJoinScan implements Scan {
 	private SortScan ss2;
 	private String fldName1, fldName2;
 	private Constant joinVal = null;
+	private long blocksAccessed = 0;
+	private long recordsOutput = 0;
 
 	/**
 	 * Creates a mergejoin scan for the two underlying sorted scans.
@@ -45,6 +47,16 @@ public class MergeJoinScan implements Scan {
 		this.ss2 = ss2;
 		this.fldName1 = fldName1;
 		this.fldName2 = fldName2;
+	}
+	
+	public MergeJoinScan(SortScan ss1, SortScan ss2, String fldName1,
+			String fldName2, long blocksAccessed, long recordsOutput) {
+		this.ss1 = ss1;
+		this.ss2 = ss2;
+		this.fldName1 = fldName1;
+		this.fldName2 = fldName2;
+		this.blocksAccessed = blocksAccessed;
+		this.recordsOutput = recordsOutput;
 	}
 
 	/**
@@ -132,5 +144,13 @@ public class MergeJoinScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) {
 		return ss1.hasField(fldName) || ss2.hasField(fldName);
+	}
+
+	@Override
+	public String explainScan() {
+		String explain = "->MergeJoinPlan: (#blks=" + this.blocksAccessed + ", #records=" + this.recordsOutput + ")\n";
+		explain = explain + ss1.explainScan();
+		explain = explain + ss2.explainScan();
+		return explain;
 	}
 }

@@ -24,6 +24,8 @@ import org.vanilladb.core.sql.Constant;
 public class ProductScan implements Scan {
 	private Scan s1, s2;
 	private boolean isLhsEmpty;
+	private long blocksAccessed = 0;
+	private long recordsOutput = 0;
 
 	/**
 	 * Creates a product scan having the two underlying scans.
@@ -36,6 +38,14 @@ public class ProductScan implements Scan {
 	public ProductScan(Scan s1, Scan s2) {
 		this.s1 = s1;
 		this.s2 = s2;
+	}
+	
+	// added new scan initializer, since we need
+	public ProductScan(Scan s1, Scan s2, long blocksAccessed, long recordsOutput) {
+		this.s1 = s1;
+		this.s2 = s2;
+		this.blocksAccessed = blocksAccessed;
+		this.recordsOutput = recordsOutput;
 	}
 
 	/**
@@ -107,5 +117,13 @@ public class ProductScan implements Scan {
 	@Override
 	public boolean hasField(String fldName) {
 		return s1.hasField(fldName) || s2.hasField(fldName);
+	}
+
+	@Override
+	public String explainScan() {
+		String explain = "->ProductPlan: (#blks=" + this.blocksAccessed + ", #records=" + this.recordsOutput + ")\n" ;
+		explain = explain + s1.explainScan();
+		explain = explain + s2.explainScan();
+		return explain;
 	}
 }
