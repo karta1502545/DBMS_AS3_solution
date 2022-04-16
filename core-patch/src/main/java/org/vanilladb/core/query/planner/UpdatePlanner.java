@@ -139,4 +139,10 @@ public interface UpdatePlanner {
 	 * @return the number of affected records
 	 */
 	int executeDropIndex(DropIndexData data, Transaction tx);
+
+	int ExplainExecuteInsert(InsertData obj, Transaction tx);
+
+	int ExplainExecuteDelete(DeleteData obj, Transaction tx);
+
+	int ExplainExecuteModify(ModifyData obj, Transaction tx);
 }

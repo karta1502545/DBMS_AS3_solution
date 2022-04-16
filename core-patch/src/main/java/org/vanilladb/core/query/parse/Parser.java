@@ -64,11 +64,13 @@ import org.vanilladb.core.util.CoreProperties;
  */
 public class Parser {
 	public static final IndexType DEFAULT_INDEX_TYPE;
+	public static boolean IS_EXPLAIN;
 
 	static {
 		int defaultIdxType = CoreProperties.getLoader().getPropertyAsInteger(
 				Parser.class.getName() + ".DEFAULT_INDEX_TYPE", 1);
 		DEFAULT_INDEX_TYPE = IndexType.fromInteger(defaultIdxType);
+		IS_EXPLAIN = false;
 	}
 
 	private static class ProjectEl {
@@ -227,11 +229,17 @@ public class Parser {
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
+		// Add explain check
+		if (lex.matchKeyword("explain")) {
+			lex.eatKeyword("explain");
+			IS_EXPLAIN = true;
+		}
+		
 		lex.eatKeyword("select");
-		ProjectList projs = projectList();
+		ProjectList projs = projectList(); // 這東東，最後也會被丟到 QueryData()
 		lex.eatKeyword("from");
-		Set<String> tables = idSet();
-		Predicate pred = new Predicate();
+		Set<String> tables = idSet(); // 把 table 都加進去 tables
+		Predicate pred = new Predicate(); // 為後面的 where 做準備
 		if (lex.matchKeyword("where")) {
 			lex.eatKeyword("where");
 			pred = predicate();
@@ -242,12 +250,12 @@ public class Parser {
 		 */
 		Set<String> groupFields = null;
 		if (lex.matchKeyword("group")) {
-			lex.eatKeyword("group");
+			lex.eatKeyword("group"); // group 後面一定是 by，兩個 token 都吃掉
 			lex.eatKeyword("by");
-			groupFields = idSet();
+			groupFields = idSet(); // 這種方式可以把 idSet 放進去
 		}
 		if (groupFields == null && projs.aggregationFns() != null)
-			groupFields = new HashSet<String>();
+			groupFields = new HashSet<String>(); // 這裡加了這個 不知道有啥用，等等 QueryData()會用到
 		// Need to preserve the order of sort fields
 		List<String> sortFields = null;
 		List<Integer> sortDirs = null;
@@ -262,6 +270,11 @@ public class Parser {
 		return new QueryData(projs.asStringSet(), tables, pred,
 				groupFields, projs.aggregationFns(), sortFields, sortDirs);
 	}
+	
+	// Methods to get IS_EXPLAIN
+	public boolean isExplain() {
+		return IS_EXPLAIN;
+	}
 
 	/*
 	 * Methods for parsing projection.
@@ -270,10 +283,10 @@ public class Parser {
 	private ProjectList projectList() {
 		ProjectList list = new ProjectList();
 		do {
-			if (lex.matchDelim(','))
+			if (lex.matchDelim(',')) // 碰到逗號就吃掉
 				lex.eatDelim(',');
 			if (lex.matchId())
-				list.addField(id());
+				list.addField(id()); // 碰到 id 就放進 Field
 			else {
 				AggregationFn aggFn = aggregationFn();
 				list.addAggFn(aggFn);
@@ -400,6 +413,12 @@ public class Parser {
 	 */
 
 	public Object updateCommand() {
+		// Add explain check
+		if (lex.matchKeyword("explain")) {
+			lex.eatKeyword("explain");
+			IS_EXPLAIN = true;
+		}
+		
 		if (lex.matchKeyword("insert"))
 			return insert();
 		else if (lex.matchKeyword("delete"))
@@ -505,7 +524,7 @@ public class Parser {
 	 * Method for parsing various create commands.
 	 */
 
-	private Object create() {
+	private Object create() { // 有分成 create table, create view, create index
 		lex.eatKeyword("create");
 		if (lex.matchKeyword("table"))
 			return createTable();
