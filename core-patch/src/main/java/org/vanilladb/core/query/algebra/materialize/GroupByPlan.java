@@ -23,6 +23,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.ReduceRecordsPlan;
 import org.vanilladb.core.query.algebra.Scan;
@@ -344,5 +345,22 @@ public class GroupByPlan extends ReduceRecordsPlan {
 			sb.append("\t").append(child).append("\n");
 		;
 		return sb.toString();
+	}
+	
+
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		sp.explain(sb, numIndents + 1); // Recurse to next layer.
+	}
+	
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		// No additional info is added for GroupByPlan
+		return sb;
 	}
 }

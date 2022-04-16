@@ -140,4 +140,22 @@ public class ProductPlan implements Plan {
 	}
 
 
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		// Recurse to p1 first, then p2
+		p1.explain(sb, numIndents + 1);
+		p2.explain(sb, numIndents + 1);
+	}
+	
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		// No additional info is added for ProdctPlan
+		return sb;
+	}
+
 }

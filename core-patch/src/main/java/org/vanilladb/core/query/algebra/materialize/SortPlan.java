@@ -20,6 +20,7 @@ import static org.vanilladb.core.sql.RecordComparator.DIR_ASC;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.query.algebra.TableScan;
@@ -310,5 +311,21 @@ public class SortPlan implements Plan {
 			sb.append("\t").append(child).append("\n");
 		;
 		return sb.toString();
+	}
+
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		p.explain(sb, numIndents + 1); // Recurse to next layer.
+	}
+	
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		// No additional info is added for SortPlan
+		return sb;
 	}
 }

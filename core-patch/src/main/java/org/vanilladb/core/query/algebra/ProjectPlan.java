@@ -111,6 +111,23 @@ public class ProjectPlan implements Plan {
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
 	}
+	
+
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		p.explain(sb, numIndents + 1); // Recurse to next layer.
+	}
+	
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		// No additional info is added for ProjectPlan
+		return sb;
+	}
 
 
 }

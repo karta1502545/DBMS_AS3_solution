@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra.materialize;
 
+import org.vanilladb.core.query.algebra.ExplainPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.query.algebra.UpdateScan;
@@ -119,5 +120,21 @@ public class MaterializePlan implements Plan {
 			sb.append("\t").append(child).append("\n");
 		;
 		return sb.toString();
+	}
+
+	@Override
+	public void explain(StringBuilder sb, int numIndents) {
+		ExplainPlan.explainNode(
+			this, 
+			sb, 
+			numIndents
+		);
+		p.explain(sb, numIndents + 1); // Recurse to next layer.
+	}
+	
+	@Override
+	public StringBuilder addOptionalInfo(StringBuilder sb) {
+		// No additional info is added for MaterializePlan
+		return sb;
 	}
 }
