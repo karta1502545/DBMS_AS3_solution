@@ -15,71 +15,73 @@
  *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
-import org.vanilladb.core.server.VanillaDb;
+import java.util.Set;
+
 import org.vanilladb.core.sql.Schema;
-import org.vanilladb.core.storage.metadata.TableInfo;
-import org.vanilladb.core.storage.metadata.TableNotFoundException;
+import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.storage.metadata.statistics.Histogram;
-import org.vanilladb.core.storage.metadata.statistics.TableStatInfo;
-import org.vanilladb.core.storage.tx.Transaction;
 
 /**
- * The {@link Plan} class corresponding to a table.
+ * The {@link Plan} class corresponding to the <em>project</em> relational
+ * algebra operator.
  */
-public class TablePlan implements Plan {
-	private Transaction tx;
-	private TableInfo ti;
-	private TableStatInfo si;
-	private String TableName;
+public class ExplainPlan implements Plan {
+	private Plan p;
+	private Schema schema = new Schema();
+	private Histogram hist;
+	private int amo=0;
 	/**
-	 * Creates a leaf node in the query tree corresponding to the specified
-	 * table.
+	 * Creates a new project node in the query tree, having the specified
+	 * subquery and field list.
 	 * 
-	 * @param tblName
-	 *            the name of the table
-	 * @param tx
-	 *            the calling transaction
+	 * @param p
+	 *            the subquery
+	 * @param fldNames
+	 *            the list of fields
 	 */
-	public TablePlan(String tblName, Transaction tx) {
-		this.tx = tx;
-		TableName = tblName;
-		ti = VanillaDb.catalogMgr().getTableInfo(tblName, tx);
-		if (ti == null)
-			throw new TableNotFoundException("table '" + tblName
-					+ "' is not defined in catalog.");
-		si = VanillaDb.statMgr().getTableStatInfo(ti, tx);
+	public ExplainPlan(Plan p) {
+		this.p = p;
+		schema.addField("query-plan", Type.VARCHAR(500));
 	}
 
 	/**
-	 * Creates a table scan for this query.
+	 * Creates a project scan for this query.
 	 * 
 	 * @see Plan#open()
 	 */
 	@Override
 	public Scan open() {
-		return new TableScan(ti, tx);
+		Scan s = p.open();
+		s.beforeFirst();
+		while(s.next()) {
+			amo++;
+		}
+		s.beforeFirst();
+		
+		String str = this.toString();
+		
+		return new ExplainScan(s, schema.fields(), str);
 	}
 
 	/**
-	 * Estimates the number of block accesses for the table, which is obtainable
-	 * from the statistics manager.
+	 * Estimates the number of block accesses in the projection, which is the
+	 * same as in the underlying query.
 	 * 
 	 * @see Plan#blocksAccessed()
 	 */
 	@Override
 	public long blocksAccessed() {
-		return si.blocksAccessed();
+		return p.blocksAccessed();
 	}
 
 	/**
-	 * Determines the schema of the table, which is obtainable from the catalog
-	 * manager.
+	 * Returns the schema of the projection, which is taken from the field list.
 	 * 
 	 * @see Plan#schema()
 	 */
 	@Override
 	public Schema schema() {
-		return ti.schema();
+		return schema;
 	}
 
 	/**
@@ -90,21 +92,35 @@ public class TablePlan implements Plan {
 	 */
 	@Override
 	public Histogram histogram() {
-		return si.histogram();
+		return hist;
 	}
 
 	@Override
 	public long recordsOutput() {
 		return (long) histogram().recordsOutput();
 	}
-
+	
+//	private int rec_amo() {
+//		Scan s = this.open();
+//		s.beforeFirst();
+//		while(s.next()) {
+//			amo++;
+//		}
+//		s.close();
+//		return amo;
+//	}
+	
 	@Override
 	public String toString() {
+		String c = p.toString();
+		String[] cs = c.split("\n");
 		StringBuilder sb = new StringBuilder();
-		sb.append("->");
-		sb.append("TablePlan on ("+ TableName +") (#blks=" + blocksAccessed() + ", #recs=" + recordsOutput() + ")\n");
+		sb.append("\n");
+		for (String child : cs)
+			sb.append(child).append("\n");
+		sb.append("\n");
+		sb.append("Actual #recs: "+ amo +"\n");
 		
 		return sb.toString();
 	}
-
 }

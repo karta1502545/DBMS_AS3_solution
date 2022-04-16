@@ -227,6 +227,12 @@ public class Parser {
 	 * Methods for parsing queries.
 	 */
 	public QueryData queryCommand() {
+		boolean explainFlag = false;
+		if (lex.matchKeyword("explain")) {
+			lex.eatKeyword("explain");
+			explainFlag = true;
+		}
+		//eat Explain keyword? new List??
 		lex.eatKeyword("select");
 		ProjectList projs = projectList();
 		lex.eatKeyword("from");
@@ -259,8 +265,7 @@ public class Parser {
 			sortFields = sortList.fieldList();
 			sortDirs = sortList.directionList();
 		}
-		return new QueryData(projs.asStringSet(), tables, pred,
-				groupFields, projs.aggregationFns(), sortFields, sortDirs);
+		return new QueryData(projs.asStringSet(), tables, pred, groupFields, projs.aggregationFns(), sortFields, sortDirs, explainFlag);
 	}
 
 	/*
