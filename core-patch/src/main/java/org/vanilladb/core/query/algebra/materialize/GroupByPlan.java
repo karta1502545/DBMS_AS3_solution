@@ -345,4 +345,13 @@ public class GroupByPlan extends ReduceRecordsPlan {
 		;
 		return sb.toString();
 	}
+	
+	@Override
+	public String explainOutput(int d){
+		String explain = "";
+		for (int i = 0; i < d; i++)
+			explain += "\t";
+		explain += String.format("->GroupbyPlan (#blks=%d, #recs=%d)\n", blocksAccessed(), recordsOutput());
+		return explain + sp.explainOutput(d + 1);
+	}
 }

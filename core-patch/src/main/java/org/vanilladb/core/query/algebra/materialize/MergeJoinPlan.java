@@ -139,4 +139,13 @@ public class MergeJoinPlan extends AbstractJoinPlan {
 		;
 		return sb.toString();
 	}
+	
+	@Override
+	public String explainOutput(int d){
+		String explain = "";
+		for (int i = 0; i < d; i++)
+			explain += "\t";
+		explain += String.format("->MergeJoinPlan (#blks=%d, #recs=%d)\n", blocksAccessed(), recordsOutput());
+		return explain + sp1.explainOutput(d + 1) + sp2.explainOutput(d + 1);
+	}
 }
