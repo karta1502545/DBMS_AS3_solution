@@ -20,7 +20,8 @@ import org.vanilladb.core.query.parse.QueryData;
 import org.vanilladb.core.storage.tx.Transaction;
 
 /**
- * The interface implemented by planners for the SQL select statements.
+ * The interface implemented by planners for the SQL select and explain
+ * statements.
  */
 public interface QueryPlanner {
 

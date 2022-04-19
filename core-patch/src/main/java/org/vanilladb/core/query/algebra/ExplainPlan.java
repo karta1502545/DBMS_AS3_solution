@@ -1,52 +1,77 @@
+/*******************************************************************************
+ * Copyright 2016, 2017 vanilladb.org contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
-import org.vanilladb.core.storage.metadata.statistics.Histogram;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
+import org.vanilladb.core.storage.metadata.statistics.Histogram;
 
+/**
+ * The {@link Plan} class corresponding to the <em>explain</em> relational
+ * algebra operator.
+ */
 public class ExplainPlan implements Plan {
-    private Plan p;
+	private Plan p;
 
 	/**
-	 * Creates a new select node in the query tree, having the specified
-	 * subquery and predicate.
+	 * Creates a new explain node in the query tree, having the specified query.
 	 * 
 	 * @param p
-	 *            the subquery
-	 * @param pred
-	 *            the predicate
+	 *            the underlying query plan
 	 */
 	public ExplainPlan(Plan p) {
 		this.p = p;
 	}
 
-    /**
-	 * Returns the schema of the selection, which is the same as in the
-	 * underlying query.
-	 * 
-	 * @see Plan#schema()
-	 */
-	@Override
-	public Schema schema() {
-        Schema schema = new Schema();
-        schema.addField("query-plan", Type.VARCHAR(500));
-		return schema;
-	}
-
-    /**
-	 * Creates a select scan for this query.
+	/**
+	 * Creates a explain scan for this query.
 	 * 
 	 * @see Plan#open()
 	 */
 	@Override
 	public Scan open() {
-		Scan s = p.open();
-		return new ExplainScan(s, this.schema(), p.toString());
+		return new ExplainScan(p.open(), schema(), p.toString());
 	}
 
-    /**
-	 * Returns the histogram that approximates the join distribution of the
-	 * field values of query results.
+	/**
+	 * Estimates the number of block accesses for answering explain query.
+	 * 
+	 * @see Plan#blocksAccessed()
+	 */
+	@Override
+	public long blocksAccessed() {
+		return p.blocksAccessed();
+	}
+
+	/**
+	 * Returns the schema of the explain query, which has only one field
+	 * "query-plan" of type varchar(500).
+	 * 
+	 * @see Plan#schema()
+	 */
+	@Override
+	public Schema schema() {
+		Schema schema = new Schema();
+		schema.addField("query-plan", Type.VARCHAR(500));
+		return schema;
+	}
+
+	/**
+	 * Returns the histogram that approximates the distribution of the
+	 * underlying query results.
 	 * 
 	 * @see Plan#histogram()
 	 */
@@ -55,27 +80,8 @@ public class ExplainPlan implements Plan {
 		return p.histogram();
 	}
 
-    /**
-	 * Returns an estimate of the number of records in the query's output table.
-	 * 
-	 * @see Plan#recordsOutput()
-	 */
 	@Override
 	public long recordsOutput() {
 		return 1;
-	}
-
-	/**
-	 * Estimates the number of block accesses in the product. The formula is:
-	 * 
-	 * <pre>
-	 * B(product(p1, p2)) = B(p1) + R(p1) * B(p2)
-	 * </pre>
-	 * 
-	 * @see Plan#blocksAccessed()
-	 */
-	@Override
-	public long blocksAccessed() {
-		return p.blocksAccessed();
 	}
 }

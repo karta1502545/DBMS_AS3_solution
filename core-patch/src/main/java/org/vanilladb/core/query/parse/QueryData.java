@@ -35,10 +35,11 @@ public class QueryData {
 	private Set<AggregationFn> aggFn;
 	private List<String> sortFields;
 	private List<Integer> sortDirs;
-	private boolean explain;
-
+	private boolean isExplain;
+	
 	/**
 	 * Saves the information of a SQL query.
+	 *
 	 * @param projFields
 	 *            a collection of field names
 	 * @param tables
@@ -54,9 +55,9 @@ public class QueryData {
 	 * @param sortDirs
 	 *            a list of sort directions
 	 */
-	public QueryData(Set<String> projFields, Set<String> tables, Predicate pred,
-			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs, boolean explain) {
-		this.explain = explain;
+	public QueryData(boolean isExplain, Set<String> projFields, Set<String> tables, Predicate pred,
+			Set<String> groupFields, Set<AggregationFn> aggFn, List<String> sortFields, List<Integer> sortDirs) {
+		this.isExplain = isExplain;
 		this.projFields = projFields;
 		this.tables = tables;
 		this.pred = pred;
@@ -64,16 +65,6 @@ public class QueryData {
 		this.aggFn = aggFn;
 		this.sortFields = sortFields;
 		this.sortDirs = sortDirs;
-	}
-
-	/**
-	 * Returns the predicate that describes which records should be in the
-	 * output table.
-	 * 
-	 * @return the query predicate
-	 */
-	public boolean isExplainPlan() {
-		return explain;
 	}
 
 	/**
@@ -140,9 +131,20 @@ public class QueryData {
 	public Set<AggregationFn> aggregationFn() {
 		return aggFn;
 	}
+	
+	/**
+	 * Returns true if the query is an explain statement.
+	 * 
+	 * @return true if the query is an explain statement
+	 */
+	public boolean isExplain() {
+		return isExplain;
+	}
 
 	public String toString() {
 		StringBuilder result = new StringBuilder();
+		if (isExplain)
+			result.append("explain ");
 		result.append("select ");
 		for (String fldname : projFields)
 			result.append(fldname + ", ");

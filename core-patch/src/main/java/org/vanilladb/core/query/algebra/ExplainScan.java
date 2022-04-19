@@ -1,85 +1,85 @@
+/*******************************************************************************
+ * Copyright 2016, 2017 vanilladb.org contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.vanilladb.core.query.algebra;
 
-import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Constant;
+import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.VarcharConstant;
 
+/**
+ * The scan class corresponding to the <em>explain</em> relational algebra
+ * operator.
+ */
 public class ExplainScan implements Scan {
-    private Scan s;
-    private Schema schema;
-    private String stat;
-    private boolean isAccessed;
 
-    public ExplainScan(Scan s, Schema schema, String explainResult) { // called by ExplainPlan.open()
-        this.s = s;
-        this.schema = schema;
-        stat = explainResult;
-        int numOfRecords = 0;
-        s.beforeFirst();
-        while (s.next()) {
-            numOfRecords++;
-        }
-        s.close();
-        stat +=  "\n Actual #recs: " + numOfRecords;
-    }
+	private String result;
+	private int numRecs;
+	private Schema schema;
+	private boolean isBeforeFirsted;
 
 	/**
-	 * Positions the scan before its first record. In other words, the LHS scan
-	 * is positioned at its first record, and the RHS scan is positioned before
-	 * its first record.
+	 * Creates a explain scan having the specified underlying query.
 	 * 
-	 * @see Scan#beforeFirst()
+	 * @param s
+	 *            the scan of the underlying query
+	 * @param schema
+	 *            the schema of the explain result
+	 * @param explain
+	 *            the string that explains the underlying query's planning tree
 	 */
-	@Override
-	public void beforeFirst() {
-        isAccessed = true;
+	public ExplainScan(Scan s, Schema schema, String explain) {
+		this.result = "\n" + explain;
+		this.schema = schema;
 		s.beforeFirst();
+		while (s.next())
+			numRecs++;
+		s.close();
+		this.result = result + "\nActual #recs: " + numRecs;
+		isBeforeFirsted = true;
 	}
 
-    /**
-	 * Moves the scan to the next record. The method moves to the next RHS
-	 * record, if possible. Otherwise, it moves to the next LHS record and the
-	 * first RHS record. If there are no more LHS records, the method returns
-	 * false.
-	 * 
-	 * @see Scan#next()
-	 */
-	@Override
-	public boolean next() {
-		if (isAccessed) {
-            isAccessed = false;
-            return true;
-        }
-        return false;
-	}
-
-	/**
-	 * Returns the value of the specified field. The value is obtained from
-	 * whichever scan contains the field.
-	 * 
-	 * @see Scan#getVal(java.lang.String)
-	 */
 	@Override
 	public Constant getVal(String fldName) {
-		if (hasField(fldName))                  // "query-plan"
-			return new VarcharConstant(stat);
-		else
+		if (fldName.equals("query-plan")) {
+			return new VarcharConstant(result);
+		} else
 			throw new RuntimeException("field " + fldName + " not found.");
 	}
 
 	@Override
-	public void close() {
-		s.close();
+	public void beforeFirst() {
+		isBeforeFirsted = true;
 	}
 
-    /**
-	 * Returns true if the specified field is in the projection list.
-	 * 
-	 * @see Scan#hasField(java.lang.String)
-	 */
 	@Override
-	public boolean hasField(String fldName) {
-		return this.schema.hasField(fldName);
+	public boolean next() {
+		if (isBeforeFirsted) {
+			isBeforeFirsted = false;
+			return true;
+		} else
+			return false;
 	}
 
+	@Override
+	public void close() {
+		// do nothing
+	}
+
+	@Override
+	public boolean hasField(String fldname) {
+		return schema.hasField(fldname);
+	}
 }
